@@ -5,6 +5,7 @@ import {
   createRootRouteWithContext,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { SessionWatcher } from '@/features/auth/session-watcher'
 import { MobileNav } from '@/shared/layout/mobile-nav'
 import { SiteFooter } from '@/shared/layout/site-footer'
 import { SiteHeader } from '@/shared/layout/site-header'
@@ -36,6 +37,7 @@ function RootLayout() {
       <SiteFooter />
       <MobileNav />
       <Toaster position="top-center" />
+      <SessionWatcher />
       {import.meta.env.DEV && <TanStackRouterDevtools position="bottom-left" />}
     </>
   )

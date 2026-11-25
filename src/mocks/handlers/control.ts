@@ -28,4 +28,15 @@ export const controlHandlers = [
     scenario.set('default')
     return HttpResponse.json({ ok: true })
   }),
+
+  // Simula a expiração de todas as sessões abertas (cenário "sessão expirada").
+  http.post(`${API}/__sessions/expire`, () => {
+    const past = new Date(Date.now() - 1000).toISOString()
+    db.state.sessions = db.state.sessions.map((s) => ({
+      ...s,
+      expiresAt: past,
+    }))
+    db.commit()
+    return HttpResponse.json({ expired: db.state.sessions.length })
+  }),
 ]

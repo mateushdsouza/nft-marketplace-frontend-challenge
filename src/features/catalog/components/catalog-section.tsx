@@ -234,7 +234,7 @@ export function CatalogSection() {
                   ))}
                 </ul>
                 <Pagination
-                  page={data.page}
+                  page={search.page}
                   totalPages={data.totalPages}
                   onNavigate={scrollToCatalog}
                 />

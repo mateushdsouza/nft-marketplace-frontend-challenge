@@ -1,5 +1,7 @@
 import { Link } from '@tanstack/react-router'
-import { LogIn, Search, ShoppingCart } from 'lucide-react'
+import { LogIn, LogOut, Search, ShoppingCart } from 'lucide-react'
+import { useLogout } from '@/features/auth/mutations'
+import { useSession } from '@/features/auth/queries'
 import { comingSoon } from '@/shared/lib/coming-soon'
 import { Button } from '@/shared/ui/button'
 
@@ -7,6 +9,9 @@ const navLinkClass =
   'relative py-3 text-base text-foreground transition-colors hover:text-text-accent'
 
 export function SiteHeader() {
+  const { user, isPending } = useSession()
+  const logout = useLogout()
+
   return (
     <header className="border-b border-primary/30">
       <div className="mx-auto flex h-16 max-w-content items-center justify-between gap-6 px-6">
@@ -76,12 +81,47 @@ export function SiteHeader() {
           >
             <ShoppingCart className="size-5" aria-hidden />
           </Link>
-          <Button asChild size="sm" className="rounded-button">
-            <Link to="/entrar">
-              <LogIn aria-hidden />
-              Entrar
-            </Link>
-          </Button>
+          {user ? (
+            <div className="flex items-center gap-3">
+              <Link
+                to="/perfil"
+                className="flex items-center gap-2 text-sm hover:text-text-accent"
+              >
+                <span
+                  aria-hidden
+                  className="flex size-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-ink"
+                >
+                  {user.displayName.charAt(0).toUpperCase()}
+                </span>
+                <span className="hidden max-w-32 truncate lg:inline">
+                  {user.displayName}
+                </span>
+                <span className="sr-only lg:hidden">Meu perfil</span>
+              </Link>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-button"
+                disabled={logout.isPending}
+                onClick={() => logout.mutate()}
+              >
+                <LogOut aria-hidden />
+                Sair
+              </Button>
+            </div>
+          ) : (
+            <Button
+              asChild
+              size="sm"
+              className="rounded-button"
+              aria-disabled={isPending || undefined}
+            >
+              <Link to="/entrar">
+                <LogIn aria-hidden />
+                Entrar
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
     </header>

@@ -1,9 +1,14 @@
 import { setupWorker } from 'msw/browser'
+import { authHandlers } from './handlers/auth'
 import { controlHandlers } from './handlers/control'
 import { nftHandlers } from './handlers/nfts'
 import { applyScenarioFromUrl } from './scenarios'
 
-export const worker = setupWorker(...controlHandlers, ...nftHandlers)
+export const worker = setupWorker(
+  ...controlHandlers,
+  ...authHandlers,
+  ...nftHandlers,
+)
 
 export async function startMocks() {
   applyScenarioFromUrl()

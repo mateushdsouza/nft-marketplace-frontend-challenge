@@ -122,6 +122,45 @@ padrão em vez de quebrar a página. Valores padrão são removidos da URL
 - A quantidade vai de 1 até o estoque da edição. Se o estoque cair depois da
   escolha (evento em tempo real), o valor exibido é limitado ao disponível.
 
+## Sessão e autenticação
+
+- **Token**: o login devolve `{ token, user, expiresAt }`. O token fica no
+  `localStorage` (`kurio:session-token`) para sobreviver a refresh e vai em
+  toda requisição como `Authorization: Bearer` (interceptor de request do
+  Axios). Sessão de 30 minutos no mock.
+- **Recuperação no refresh**: a query `["session"]` chama
+  `GET /api/auth/session` quando existe token. Sem token, o usuário é visitante
+  e nenhuma requisição é feita.
+- **Rotas privadas**: ficam dentro da rota sem caminho `_auth`
+  (`src/routes/_auth/`), cujo `beforeLoad` confere a sessão e redireciona para
+  `/entrar?redirect=<endereço atual>`. Hoje são privadas: pagamento, perfil,
+  carteiras e pedidos. O carrinho é público (carrinho de visitante).
+- **Retorno ao fluxo**: depois do login, a navegação vai para o `redirect`. Só
+  são aceitos caminhos internos (começando com `/` e não `//`), para o
+  parâmetro não servir de redirecionamento para outro site.
+- **Expiração**: um 401 numa requisição que levou token significa sessão
+  encerrada no servidor. O interceptor apaga o token e avisa o
+  `SessionWatcher`, que remove os dados privados do cache, mostra um aviso e,
+  se a tela atual for privada, leva ao login guardando o endereço.
+- **Logout e troca de usuário**: removem do cache todas as queries privadas
+  (`["user", userId, ...]`) e gravam a nova sessão (ou `null`). O catálogo é
+  público e continua em cache. Usar `queryClient.clear()` não serve: ele desliga
+  as queries que já estão sendo observadas, e o cabeçalho ficava mostrando o
+  estado antigo.
+- **Isolamento**: toda query de dado privado leva o id do usuário na chave, então
+  o cache de um usuário nunca é lido por outro.
+- **Erros da API nos formulários**: `fieldErrors` de 422/409 vão para o campo
+  correspondente (`setError` do react-hook-form). Login inválido devolve a mesma
+  mensagem para e-mail inexistente e senha errada.
+
+| Método | Rota                     | Respostas                                                 |
+| ------ | ------------------------ | --------------------------------------------------------- |
+| POST   | `/api/auth/register`     | 201 sessão · 422 validação · 409 e-mail ou usuário em uso |
+| POST   | `/api/auth/login`        | 200 sessão · 401 credenciais inválidas                    |
+| GET    | `/api/auth/session`      | 200 sessão · 401 sem token / expirada                     |
+| POST   | `/api/auth/logout`       | 204                                                       |
+| POST   | `/api/__sessions/expire` | controle: expira todas as sessões                         |
+
 ## Rotas
 
 URLs em português, porque são texto que o usuário vê. Código, API e eventos
@@ -132,7 +171,7 @@ ficam em inglês.
 | `/`                     | Início / catálogo                                                 |
 | `/nft/$id`              | Detalhe do NFT                                                    |
 | `/carrinho`             | Carrinho                                                          |
-| `/pagamento`            | Pagamento                                                         |
+| `/pagamento` (privada)  | Pagamento                                                         |
 | `/pedidos/$id`          | Confirmação (o id na URL permite recuperar o pedido após refresh) |
 | `/entrar`, `/cadastro`  | Login e cadastro                                                  |
 | `/perfil`, `/carteiras` | Conta                                                             |
@@ -164,6 +203,7 @@ o refresh funcionam no deploy.
   - rodapé simplificado (faixa da marca e copyright);
   - no mobile, a barra inferior tem Início, Favoritos, Carrinho e Perfil; o botão central do Figma não tem função definida e foi omitido.
 - **Detalhe vs. Figma**: o Figma repete a mesma arte nas 4 miniaturas; aqui elas mostram recortes da arte (completa, rosto, acessórios, roupa). A aba "Avaliações" e os textos de royalties/contrato ficaram de fora, porque a API não tem esses dados. "Compartilhar" copia o link do NFT.
+- **Login e cadastro como páginas**: no desktop do Figma o login é um modal sobre a home; aqui `/entrar` e `/cadastro` são páginas com o mesmo card, para funcionar com acesso direto, refresh e `?redirect=`. Os campos têm rótulo visível (o Figma só usa placeholder), por acessibilidade. Login social e "Esqueceu a senha?" ficam fora do escopo e avisam isso.
 - **Ações fora do escopo** (Criadores, Aprenda, Favoritos antes do login) mostram um toast "ainda não está disponível" em vez de parecer que funcionaram.
 - **Ícones**: `lucide-react` (já vem com o shadcn/ui) no lugar dos SVGs do Iconly, por serem parecidos e já otimizados.
 - **Imagens**: as artes do Figma foram exportadas em WebP 800×800. Ainda não há
