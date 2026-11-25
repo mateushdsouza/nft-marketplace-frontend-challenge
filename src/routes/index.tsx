@@ -1,20 +1,23 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { Button } from '@/shared/ui/button'
+import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
+import { CatalogSection } from '@/features/catalog/components/catalog-section'
+import { Hero } from '@/features/catalog/components/hero'
+import {
+  catalogSearchDefaults,
+  catalogSearchSchema,
+} from '@/features/catalog/search'
 
 export const Route = createFileRoute('/')({
+  validateSearch: catalogSearchSchema,
+  // Valores padrão não aparecem na URL: "/" em vez de "/?tab=all&sort=recent&page=1".
+  search: { middlewares: [stripSearchParams(catalogSearchDefaults)] },
   component: HomePage,
 })
 
 function HomePage() {
   return (
-    <main className="mx-auto max-w-content px-6 py-24">
-      <p className="text-sm font-bold tracking-[0.1em]">KURIO</p>
-      <h1 className="mt-8 text-[43px] leading-tight font-bold uppercase">
-        Seja dono do futuro da arte digital
-      </h1>
-      <p className="mt-4 text-text-secondary">Em construção.</p>
-      <p className="mt-8 text-lg font-bold text-text-accent">1.19 ETH</p>
-      <Button className="mt-8">Explorar</Button>
+    <main>
+      <Hero />
+      <CatalogSection />
     </main>
   )
 }

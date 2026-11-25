@@ -26,12 +26,19 @@ export async function callApi<T = unknown>(
   )
 }
 
+// O cenário fica salvo no localStorage do mock, então vale também
+// para as próximas navegações da página.
+export async function setScenario(page: Page, name: string) {
+  const { status } = await callApi(page, '/api/__scenario', {
+    method: 'POST',
+    body: { name },
+  })
+  if (status !== 200) throw new Error(`Cenário inválido: ${name}`)
+}
+
 // Cada teste começa do mesmo estado: banco restaurado e cenário escolhido.
 export async function resetMocks(page: Page, scenario = 'fast') {
   await page.goto('/')
   await callApi(page, '/api/__reset', { method: 'POST' })
-  await callApi(page, '/api/__scenario', {
-    method: 'POST',
-    body: { name: scenario },
-  })
+  await setScenario(page, scenario)
 }

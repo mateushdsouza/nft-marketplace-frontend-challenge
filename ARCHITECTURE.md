@@ -74,6 +74,41 @@ salvos no `localStorage`.
 A latência "aleatória" usa um gerador com semente fixa (mulberry32). Depois de um
 reset, a sequência é sempre a mesma, e os testes ficam reproduzíveis.
 
+## Estado remoto e cache (TanStack Query)
+
+| Configuração           | Valor                                                                  | Motivo                                                                                                                      |
+| ---------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `staleTime`            | 30 s                                                                   | O catálogo muda pouco; voltar a uma página recente não refaz a requisição. Mudanças de preço chegam por evento (Socket.IO). |
+| `gcTime`               | 5 min                                                                  | Entradas sem uso saem da memória.                                                                                           |
+| `retry`                | até 2 vezes, **só** para falha transitória (sem conexão, timeout, 503) | Repetir 404/401/422 não muda o resultado. Mutations nunca repetem sozinhas (evita compra duplicada).                        |
+| `refetchOnWindowFocus` | desligado                                                              | Evita requisições surpresa durante os testes; a reconciliação vem do socket.                                                |
+
+Chaves de query (`src/features/catalog/queries.ts`):
+
+- `["nfts", "list", params]`: cada combinação de filtros tem sua entrada.
+- `["nfts", "detail", id]`
+
+**Respostas fora de ordem**: a tela só lê a chave dos parâmetros atuais. Se a
+resposta de um filtro antigo chegar depois, ela é gravada na chave antiga e não
+aparece. Além disso, o `signal` do Query vai para o Axios e cancela a
+requisição anterior quando os parâmetros mudam.
+
+`placeholderData: keepPreviousData` mantém a página anterior visível (com
+opacidade reduzida e `aria-busy`) enquanto a nova carrega, sem layout shift.
+
+## Catálogo: URL como estado
+
+Busca, filtros, aba, ordenação e página vivem na URL e são validados por um
+schema zod no `validateSearch` da rota `/`. Valor inválido na URL cai no
+padrão em vez de quebrar a página. Valores padrão são removidos da URL
+(`stripSearchParams`).
+
+- Mudar qualquer filtro volta para a página 1.
+- A busca tem debounce de 350 ms e usa `replace` no histórico, para cada letra
+  não virar uma entrada do "voltar".
+- Contagens por categoria e rede vêm da API e consideram os outros filtros
+  ativos.
+
 ## Rotas
 
 URLs em português, porque são texto que o usuário vê. Código, API e eventos
@@ -101,5 +136,13 @@ o refresh funcionam no deploy.
 - **shadcn/ui com Radix**: o `shadcn init` não terminava de forma não interativa,
   então o `components.json` foi escrito à mão. Os componentes ficam em
   `src/shared/ui`.
+- **Catálogo vs. Figma**:
+  - campo de busca visível acima da grade em todas as larguras (no desktop do Figma só há o ícone no header, que agora leva até ele);
+  - faixa de preço com dois campos numéricos em vez do slider: é mais fácil de usar pelo teclado e de validar;
+  - os blocos editoriais da home (promoções, "Diário da Cunhagem", newsletter) e o card "NFT em destaque" ficaram de fora: são conteúdo estático fora do escopo;
+  - rodapé simplificado (faixa da marca e copyright);
+  - no mobile, a barra inferior tem Início, Favoritos, Carrinho e Perfil; o botão central do Figma não tem função definida e foi omitido.
+- **Ações fora do escopo** (Criadores, Aprenda, Favoritos antes do login) mostram um toast "ainda não está disponível" em vez de parecer que funcionaram.
+- **Ícones**: `lucide-react` (já vem com o shadcn/ui) no lugar dos SVGs do Iconly, por serem parecidos e já otimizados.
 - **Imagens**: as artes do Figma foram exportadas em WebP 800×800. Ainda não há
   versão menor para os cards.

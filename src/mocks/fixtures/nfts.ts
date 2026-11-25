@@ -1,9 +1,10 @@
-import type {
-  Category,
-  EditionKind,
-  Network,
-  Nft,
-  NftEdition,
+import {
+  CATEGORIES,
+  NETWORKS,
+  type EditionKind,
+  type Network,
+  type Nft,
+  type NftEdition,
 } from '@/shared/api/types'
 
 const IMAGES = [
@@ -12,20 +13,6 @@ const IMAGES = [
   '/nfts/nft-03.webp',
   '/nfts/nft-04.webp',
 ]
-
-const CATEGORIES: Category[] = [
-  'arte-digital',
-  'fotografia',
-  'musica',
-  'arte-3d',
-  'colecionaveis',
-  'generativa',
-  'jogos',
-  'assinaturas',
-  'utilidade',
-]
-
-const NETWORKS: Network[] = ['ethereum', 'polygon', 'solana']
 
 const NETWORK_NAME: Record<Network, string> = {
   ethereum: 'Ethereum',

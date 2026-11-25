@@ -3,18 +3,21 @@
 
 export type EthAmount = string
 
-export type Network = 'ethereum' | 'polygon' | 'solana'
+export const NETWORKS = ['ethereum', 'polygon', 'solana'] as const
+export type Network = (typeof NETWORKS)[number]
 
-export type Category =
-  | 'arte-digital'
-  | 'fotografia'
-  | 'musica'
-  | 'arte-3d'
-  | 'colecionaveis'
-  | 'generativa'
-  | 'jogos'
-  | 'assinaturas'
-  | 'utilidade'
+export const CATEGORIES = [
+  'arte-digital',
+  'fotografia',
+  'musica',
+  'arte-3d',
+  'colecionaveis',
+  'generativa',
+  'jogos',
+  'assinaturas',
+  'utilidade',
+] as const
+export type Category = (typeof CATEGORIES)[number]
 
 export type EditionKind = '1/1' | '1/10' | '1/50' | 'aberta'
 
@@ -45,8 +48,11 @@ export interface Nft {
   version: number
 }
 
-export type NftSort = 'recent' | 'price-asc' | 'price-desc' | 'name'
-export type NftTab = 'all' | 'new' | 'trending'
+export const NFT_SORTS = ['recent', 'price-asc', 'price-desc', 'name'] as const
+export type NftSort = (typeof NFT_SORTS)[number]
+
+export const NFT_TABS = ['all', 'new', 'trending'] as const
+export type NftTab = (typeof NFT_TABS)[number]
 
 export interface NftListParams {
   q?: string

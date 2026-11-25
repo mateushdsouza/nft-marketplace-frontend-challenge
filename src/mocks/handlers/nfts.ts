@@ -1,34 +1,21 @@
 import Decimal from 'decimal.js'
 import { http, HttpResponse } from 'msw'
 import { z } from 'zod'
-import type {
-  Category,
-  FacetCount,
-  Network,
-  Nft,
-  NftListResponse,
+import {
+  CATEGORIES,
+  NETWORKS,
+  NFT_SORTS,
+  NFT_TABS,
+  type FacetCount,
+  type Nft,
+  type NftListResponse,
 } from '@/shared/api/types'
 import { db } from '../db'
 import { API, apiError, withNetwork } from '../http'
 import { scenario } from '../scenarios'
 
-const CATEGORY_VALUES = [
-  'arte-digital',
-  'fotografia',
-  'musica',
-  'arte-3d',
-  'colecionaveis',
-  'generativa',
-  'jogos',
-  'assinaturas',
-  'utilidade',
-] as const satisfies readonly Category[]
-
-const NETWORK_VALUES = [
-  'ethereum',
-  'polygon',
-  'solana',
-] as const satisfies readonly Network[]
+const CATEGORY_VALUES = CATEGORIES
+const NETWORK_VALUES = NETWORKS
 
 const ethString = z.string().regex(/^\d+(\.\d+)?$/, 'Valor em ETH inválido')
 
@@ -38,8 +25,8 @@ const listQuerySchema = z.object({
   network: z.enum(NETWORK_VALUES).optional(),
   minPrice: ethString.optional(),
   maxPrice: ethString.optional(),
-  tab: z.enum(['all', 'new', 'trending']).default('all'),
-  sort: z.enum(['recent', 'price-asc', 'price-desc', 'name']).default('recent'),
+  tab: z.enum(NFT_TABS).default('all'),
+  sort: z.enum(NFT_SORTS).default('recent'),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(48).default(9),
 })

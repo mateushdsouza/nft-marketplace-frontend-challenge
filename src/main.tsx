@@ -1,10 +1,21 @@
+import { QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { createQueryClient } from './app/query-client'
 import './index.css'
 import { routeTree } from './routeTree.gen'
 
-const router = createRouter({ routeTree })
+const queryClient = createQueryClient()
+
+const router = createRouter({
+  routeTree,
+  context: { queryClient },
+  defaultPreload: 'intent',
+  // Com o QueryClient cuidando do cache, o Router não precisa guardar dados.
+  defaultPreloadStaleTime: 0,
+  scrollRestoration: true,
+})
 
 declare module '@tanstack/react-router' {
   interface Register {
@@ -23,7 +34,9 @@ async function enableMocks() {
 enableMocks().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </StrictMode>,
   )
 })

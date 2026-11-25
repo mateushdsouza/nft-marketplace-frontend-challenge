@@ -58,6 +58,35 @@
   --color-ring: var(--color-primary);
 }
 
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+@layer components {
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-surface) 25%,
+      var(--color-surface-raised) 50%,
+      var(--color-surface) 75%
+    );
+    background-size: 300% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-shimmer {
+      animation: none;
+      background: var(--color-surface);
+    }
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -65,6 +94,13 @@
 
   html {
     color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 
   body {
