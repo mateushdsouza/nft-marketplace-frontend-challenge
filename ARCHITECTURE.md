@@ -148,9 +148,6 @@ o refresh funcionam no deploy.
   (Ethereum, Polygon, Solana), mas todos os preços em ETH, e o enunciado trata
   todos os valores como ETH. No mundo real, um NFT da Solana seria cotado em SOL.
   Aqui a rede muda só a taxa de rede da cotação.
-- **Dois identificadores**: `id` (`nft_012`) é a chave da API, usada na URL e
-  no `GET /api/nfts/:id`; `tokenId` (`#0600`) é o número do token, só para
-  exibição (a busca também encontra por ele).
 - **Categoria vs. coleção**: a lista "Coleções" da sidebar do Figma traz
   categorias (Arte digital, Fotografia…), e é esse o filtro da URL
   (`category`). A coleção do NFT (ex.: Kurio Apes) tem um filtro próprio na API
