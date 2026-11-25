@@ -115,7 +115,7 @@ export function CatalogSection() {
             <div
               role="group"
               aria-label="Listas"
-              className="flex gap-5 overflow-x-auto"
+              className="flex flex-wrap gap-x-4 gap-y-2 sm:gap-x-5"
             >
               {NFT_TABS.map((tab) => (
                 <button
@@ -124,7 +124,7 @@ export function CatalogSection() {
                   aria-pressed={search.tab === tab}
                   onClick={() => updateSearch({ tab })}
                   className={cn(
-                    'relative shrink-0 py-1 text-sm whitespace-nowrap transition-colors',
+                    'relative py-1 text-[13px] whitespace-nowrap transition-colors sm:text-sm',
                     search.tab === tab
                       ? 'font-bold text-text-accent after:absolute after:inset-x-0 after:-bottom-[13px] after:h-[3px] after:bg-primary'
                       : 'text-foreground hover:text-text-accent',

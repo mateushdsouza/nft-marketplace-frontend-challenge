@@ -119,3 +119,18 @@ test('carregamento lento mostra skeleton com as dimensões do card', async ({
   await expect(page.getByText('Carregando NFTs…')).toBeVisible()
   await expect(cards(page).first()).toBeVisible({ timeout: 10_000 })
 })
+
+test('home sem rolagem horizontal, inclusive nas abas', async ({ page }) => {
+  await page.goto('/')
+  await expect(cards(page).first()).toBeVisible()
+  const pageOverflow = await page.evaluate(
+    () =>
+      document.documentElement.scrollWidth -
+      document.documentElement.clientWidth,
+  )
+  expect(pageOverflow).toBe(0)
+  const tabsOverflow = await page
+    .getByRole('group', { name: 'Listas' })
+    .evaluate((el) => el.scrollWidth - el.clientWidth)
+  expect(tabsOverflow).toBe(0)
+})
