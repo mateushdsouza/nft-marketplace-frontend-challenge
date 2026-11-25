@@ -109,6 +109,19 @@ padrão em vez de quebrar a página. Valores padrão são removidos da URL
 - Contagens por categoria e rede vêm da API e consideram os outros filtros
   ativos.
 
+## Detalhe do NFT
+
+- O `loader` da rota chama `queryClient.ensureQueryData`: no acesso direto pela
+  URL os dados chegam antes da tela, e na navegação a partir do catálogo o cache é
+  reaproveitado. Um 404 da API vira `notFound()` e mostra "NFT não encontrado";
+  outras falhas caem no `errorComponent` com "Tentar novamente"
+  (`router.invalidate()`).
+- A edição escolhida começa na primeira com estoque. Edição esgotada aparece
+  riscada, com o texto "(esgotada)" (o estado não depende só de cor), e o radio
+  fica desabilitado.
+- A quantidade vai de 1 até o estoque da edição. Se o estoque cair depois da
+  escolha (evento em tempo real), o valor exibido é limitado ao disponível.
+
 ## Rotas
 
 URLs em português, porque são texto que o usuário vê. Código, API e eventos
@@ -142,6 +155,7 @@ o refresh funcionam no deploy.
   - os blocos editoriais da home (promoções, "Diário da Cunhagem", newsletter) e o card "NFT em destaque" ficaram de fora: são conteúdo estático fora do escopo;
   - rodapé simplificado (faixa da marca e copyright);
   - no mobile, a barra inferior tem Início, Favoritos, Carrinho e Perfil; o botão central do Figma não tem função definida e foi omitido.
+- **Detalhe vs. Figma**: o Figma repete a mesma arte nas 4 miniaturas; aqui elas mostram recortes da arte (completa, rosto, acessórios, roupa). A aba "Avaliações" e os textos de royalties/contrato ficaram de fora, porque a API não tem esses dados. "Mais desta coleção" virou "Mais desta rede", porque o catálogo não filtra por coleção. "Compartilhar" copia o link do NFT.
 - **Ações fora do escopo** (Criadores, Aprenda, Favoritos antes do login) mostram um toast "ainda não está disponível" em vez de parecer que funcionaram.
 - **Ícones**: `lucide-react` (já vem com o shadcn/ui) no lugar dos SVGs do Iconly, por serem parecidos e já otimizados.
 - **Imagens**: as artes do Figma foram exportadas em WebP 800×800. Ainda não há
