@@ -1,6 +1,11 @@
+import { createFileRoute } from '@tanstack/react-router'
 import { Button } from '@/shared/ui/button'
 
-function App() {
+export const Route = createFileRoute('/')({
+  component: HomePage,
+})
+
+function HomePage() {
   return (
     <main className="mx-auto max-w-content px-6 py-24">
       <p className="text-sm font-bold tracking-[0.1em]">KURIO</p>
@@ -13,5 +18,3 @@ function App() {
     </main>
   )
 }
-
-export default App

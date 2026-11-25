@@ -7,7 +7,7 @@ import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'src/routeTree.gen.ts']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -21,7 +21,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['src/shared/ui/**/*.tsx'],
+    files: ['src/shared/ui/**/*.tsx', 'src/routes/**/*.tsx'],
     rules: { 'react-refresh/only-export-components': 'off' },
   },
   eslintConfigPrettier,
