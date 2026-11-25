@@ -1,7 +1,10 @@
 @import 'tailwindcss';
+@import 'tw-animate-css';
 @import '@fontsource/roboto-mono/latin-400.css';
 @import '@fontsource/roboto-mono/latin-500.css';
 @import '@fontsource/roboto-mono/latin-700.css';
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: 'Roboto Mono', ui-monospace, monospace;
@@ -37,7 +40,29 @@
   --container-content: 1200px;
 }
 
+/* Nomes que os componentes do shadcn/ui esperam, apontando para os tokens do Figma */
+@theme inline {
+  --color-background: var(--color-ink);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-foreground);
+  --color-popover: var(--color-surface);
+  --color-popover-foreground: var(--color-foreground);
+  --color-primary-foreground: var(--color-ink);
+  --color-secondary-foreground: var(--color-ink);
+  --color-muted: var(--color-surface);
+  --color-muted-foreground: var(--color-text-secondary);
+  --color-accent: var(--color-surface-raised);
+  --color-accent-foreground: var(--color-foreground);
+  --color-destructive: var(--color-error);
+  --color-input: var(--color-border);
+  --color-ring: var(--color-primary);
+}
+
 @layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
   html {
     color-scheme: dark;
   }

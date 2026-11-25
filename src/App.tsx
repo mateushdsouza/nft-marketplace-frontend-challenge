@@ -1,3 +1,5 @@
+import { Button } from '@/shared/ui/button'
+
 function App() {
   return (
     <main className="mx-auto max-w-content px-6 py-24">
@@ -7,12 +9,7 @@ function App() {
       </h1>
       <p className="mt-4 text-text-secondary">Em construção.</p>
       <p className="mt-8 text-lg font-bold text-text-accent">1.19 ETH</p>
-      <button
-        type="button"
-        className="mt-8 rounded-button bg-primary px-6 py-2 text-ink"
-      >
-        Explorar
-      </button>
+      <Button className="mt-8">Explorar</Button>
     </main>
   )
 }
