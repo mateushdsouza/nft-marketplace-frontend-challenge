@@ -8,7 +8,7 @@ import type { Nft } from '@/shared/api/types'
 
 export function RelatedNfts({ nft }: { nft: Nft }) {
   const { data, isPending, isError } = useQuery(
-    nftListQuery({ network: nft.network, sort: 'recent', pageSize: 6 }),
+    nftListQuery({ collection: nft.collection, sort: 'recent', pageSize: 6 }),
   )
   const items = data?.items.filter((item) => item.id !== nft.id).slice(0, 5)
 
@@ -20,7 +20,7 @@ export function RelatedNfts({ nft }: { nft: Nft }) {
         id="relacionados"
         className="border-b border-border pb-3 text-base font-bold text-text-accent"
       >
-        Mais desta rede
+        Mais desta coleção
       </h2>
       <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-5">
         {isPending

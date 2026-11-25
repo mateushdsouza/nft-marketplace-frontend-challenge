@@ -58,6 +58,7 @@ export interface NftListParams {
   q?: string
   category?: Category
   network?: Network
+  collection?: string
   minPrice?: EthAmount
   maxPrice?: EthAmount
   tab?: NftTab

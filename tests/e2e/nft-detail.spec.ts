@@ -70,3 +70,18 @@ test('falha ao carregar o detalhe permite tentar de novo', async ({ page }) => {
     page.getByRole('heading', { level: 1, name: 'Emerald Ape #042' }),
   ).toBeVisible()
 })
+
+test('"Mais desta coleção" lista só NFTs da mesma coleção', async ({
+  page,
+}) => {
+  await page.goto('/nft/nft_001')
+  const section = page.getByRole('region', { name: 'Mais desta coleção' })
+  await expect(section.getByRole('article').first()).toBeVisible()
+  await expect(section.getByText('Emerald Ape #042')).toHaveCount(0)
+
+  const firstOther = section.getByRole('link').first()
+  await firstOther.click()
+  await expect(page.getByText('Coleção:').locator('..')).toContainText(
+    'Kurio Apes',
+  )
+})

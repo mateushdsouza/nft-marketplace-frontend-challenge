@@ -23,6 +23,7 @@ const listQuerySchema = z.object({
   q: z.string().trim().max(80).optional(),
   category: z.enum(CATEGORY_VALUES).optional(),
   network: z.enum(NETWORK_VALUES).optional(),
+  collection: z.string().trim().max(80).optional(),
   minPrice: ethString.optional(),
   maxPrice: ethString.optional(),
   tab: z.enum(NFT_TABS).default('all'),
@@ -41,6 +42,7 @@ function matches(nft: Nft, query: ListQuery, skip?: 'category' | 'network') {
   }
   if (skip !== 'category' && query.category && nft.category !== query.category)
     return false
+  if (query.collection && nft.collection !== query.collection) return false
   if (skip !== 'network' && query.network && nft.network !== query.network)
     return false
   if (query.minPrice && new Decimal(nft.priceEth).lt(query.minPrice))

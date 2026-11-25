@@ -34,12 +34,12 @@ handlers do MSW. Se um contrato muda, o TypeScript acusa os dois.
 
 ### Endpoints implementados
 
-| Método   | Rota              | Observações                                                                                                                                                                                                                                                             |
-| -------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| GET      | `/api/nfts`       | `q`, `category`, `network`, `minPrice`, `maxPrice`, `tab` (`all`/`new`/`trending`), `sort` (`recent`/`price-asc`/`price-desc`/`name`), `page`, `pageSize` (padrão 9). Retorna página, total, contagem por categoria/rede e faixa de preço. 422 para parâmetro inválido. |
-| GET      | `/api/nfts/:id`   | 404 se não existir.                                                                                                                                                                                                                                                     |
-| GET/POST | `/api/__scenario` | Consulta/troca o cenário de rede.                                                                                                                                                                                                                                       |
-| POST     | `/api/__reset`    | Restaura o banco e o cenário padrão.                                                                                                                                                                                                                                    |
+| Método   | Rota              | Observações                                                                                                                                                                                                                                                                           |
+| -------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET      | `/api/nfts`       | `q`, `category`, `network`, `collection`, `minPrice`, `maxPrice`, `tab` (`all`/`new`/`trending`), `sort` (`recent`/`price-asc`/`price-desc`/`name`), `page`, `pageSize` (padrão 9). Retorna página, total, contagem por categoria/rede e faixa de preço. 422 para parâmetro inválido. |
+| GET      | `/api/nfts/:id`   | 404 se não existir.                                                                                                                                                                                                                                                                   |
+| GET/POST | `/api/__scenario` | Consulta/troca o cenário de rede.                                                                                                                                                                                                                                                     |
+| POST     | `/api/__reset`    | Restaura o banco e o cenário padrão.                                                                                                                                                                                                                                                  |
 
 ## Backend simulado (MSW)
 
@@ -144,6 +144,17 @@ o refresh funcionam no deploy.
 ## Decisões e desvios
 
 - **MSW 2 em vez de 3**: o `@mswjs/socket.io-binding` exige `msw ^2.10`.
+- **Preços sempre em ETH, em qualquer rede**: o Figma mostra o filtro de rede
+  (Ethereum, Polygon, Solana), mas todos os preços em ETH, e o enunciado trata
+  todos os valores como ETH. No mundo real, um NFT da Solana seria cotado em SOL.
+  Aqui a rede muda só a taxa de rede da cotação.
+- **Dois identificadores**: `id` (`nft_012`) é a chave da API, usada na URL e
+  no `GET /api/nfts/:id`; `tokenId` (`#0600`) é o número do token, só para
+  exibição (a busca também encontra por ele).
+- **Categoria vs. coleção**: a lista "Coleções" da sidebar do Figma traz
+  categorias (Arte digital, Fotografia…), e é esse o filtro da URL
+  (`category`). A coleção do NFT (ex.: Kurio Apes) tem um filtro próprio na API
+  (`collection`), usado em "Mais desta coleção" no detalhe.
 - **Preço por NFT, não por edição**: as edições (1/1, 1/10, 1/50, aberta) têm
   estoque próprio, mas o mesmo preço. O Figma mostra um único preço no detalhe.
 - **shadcn/ui com Radix**: o `shadcn init` não terminava de forma não interativa,
@@ -155,7 +166,7 @@ o refresh funcionam no deploy.
   - os blocos editoriais da home (promoções, "Diário da Cunhagem", newsletter) e o card "NFT em destaque" ficaram de fora: são conteúdo estático fora do escopo;
   - rodapé simplificado (faixa da marca e copyright);
   - no mobile, a barra inferior tem Início, Favoritos, Carrinho e Perfil; o botão central do Figma não tem função definida e foi omitido.
-- **Detalhe vs. Figma**: o Figma repete a mesma arte nas 4 miniaturas; aqui elas mostram recortes da arte (completa, rosto, acessórios, roupa). A aba "Avaliações" e os textos de royalties/contrato ficaram de fora, porque a API não tem esses dados. "Mais desta coleção" virou "Mais desta rede", porque o catálogo não filtra por coleção. "Compartilhar" copia o link do NFT.
+- **Detalhe vs. Figma**: o Figma repete a mesma arte nas 4 miniaturas; aqui elas mostram recortes da arte (completa, rosto, acessórios, roupa). A aba "Avaliações" e os textos de royalties/contrato ficaram de fora, porque a API não tem esses dados. "Compartilhar" copia o link do NFT.
 - **Ações fora do escopo** (Criadores, Aprenda, Favoritos antes do login) mostram um toast "ainda não está disponível" em vez de parecer que funcionaram.
 - **Ícones**: `lucide-react` (já vem com o shadcn/ui) no lugar dos SVGs do Iconly, por serem parecidos e já otimizados.
 - **Imagens**: as artes do Figma foram exportadas em WebP 800×800. Ainda não há
