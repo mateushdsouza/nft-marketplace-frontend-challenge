@@ -1,30 +1,22 @@
 import { z } from 'zod'
 import { NETWORKS } from '@/shared/api/types'
 
-// ---------------------------------------------------------------------------
-// TAREFA DO MATEUS — validação do formulário de pagamento
-//
-// Troque cada z.string() pelas regras abaixo, com as mensagens exatas
-// (os testes procuram por elas):
-//
-// - displayName: obrigatório, 2 a 60 caracteres (use .trim()).
-//     "Digite seu nome de exibição." | "Use no máximo 60 caracteres."
-// - username: mesma regra do cadastro (src/features/auth/schemas.ts).
-// - email: e-mail válido. "Digite um e-mail válido."
-// - note: opcional, até 280 caracteres. "Use no máximo 280 caracteres."
-//     (o campo vazio chega como "" — isso precisa ser aceito)
-// - walletId: obrigatório. "Escolha uma carteira."
-// - network: já está pronto.
-//
-// Critério de pronto: npx playwright test checkout passa.
-// ---------------------------------------------------------------------------
+// Dados do colecionador no pagamento. A observação é opcional: vazia chega
+// como "" e é enviada à API como null.
 
 export const checkoutSchema = z.object({
-  displayName: z.string(),
-  username: z.string(),
-  email: z.string(),
-  note: z.string(),
-  walletId: z.string(),
+  displayName: z
+    .string()
+    .trim()
+    .min(2, { message: 'Digite seu nome de exibição.' })
+    .max(60, { message: 'Use no máximo 60 caracteres.' }),
+  username: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9_.]{3,24}$/i, 'Use 3 a 24 letras, números, ponto ou _.'),
+  email: z.email('Digite um e-mail válido.'),
+  note: z.string().max(280, 'Use no máximo 280 caracteres.'),
+  walletId: z.string().nonempty('Escolha uma carteira.'),
   network: z.enum(NETWORKS),
 })
 
