@@ -82,10 +82,15 @@ test('busca com debounce e ordenação por preço', async ({ page }) => {
     .getByRole('article')
     .locator('.text-text-accent')
   await expect(prices).toHaveCount(9)
-  const values = (await prices.allTextContents()).map((t) =>
-    Number.parseFloat(t),
-  )
-  expect(values).toEqual([...values].sort((a, b) => a - b))
+  // A lista anterior fica na tela até a nova chegar: espera a ordem certa.
+  await expect
+    .poll(async () => {
+      const values = (await prices.allTextContents()).map((t) =>
+        Number.parseFloat(t),
+      )
+      return values.every((v, i) => i === 0 || values[i - 1] <= v)
+    })
+    .toBe(true)
 })
 
 test('resultado vazio oferece limpar a busca', async ({ page }) => {
