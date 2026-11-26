@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw'
 import { z } from 'zod'
 import { NETWORKS, type Wallet } from '@/shared/api/types'
+import { addressError } from '@/shared/lib/wallet-address'
 import { authenticate } from '../auth'
 import { db } from '../db'
 import { API, apiError, withNetwork } from '../http'
@@ -10,14 +11,11 @@ import { scenario } from '../scenarios'
 // como acontece com uma extensão de carteira de verdade.
 export const connectedWallets = new Set<string>()
 
-export const walletSchema = z.object({
+const walletFields = z.object({
   slot: z.enum(['primary', 'secondary']),
   nickname: z.string().trim().min(2, 'Use pelo menos 2 caracteres.').max(40),
   network: z.enum(NETWORKS),
-  address: z
-    .string()
-    .trim()
-    .regex(/^0x[a-fA-F0-9]{40}$/, 'Endereço inválido: use 0x + 40 caracteres.'),
+  address: z.string().trim(),
   provider: z.enum(['metamask', 'coinbase', 'walletconnect']),
   ensName: z
     .string()
@@ -26,6 +24,20 @@ export const walletSchema = z.object({
     .nullable()
     .transform((v) => v || null),
 })
+
+// O formato do endereço depende da rede (EVM ou Solana).
+function checkAddress(
+  value: { network: Wallet['network']; address: string },
+  ctx: z.RefinementCtx,
+) {
+  const message = addressError(value.network, value.address)
+  if (message) ctx.addIssue({ code: 'custom', path: ['address'], message })
+}
+
+const createWalletSchema = walletFields.superRefine(checkAddress)
+const updateWalletSchema = walletFields
+  .omit({ slot: true })
+  .superRefine(checkAddress)
 
 function fieldErrorsOf(error: z.ZodError) {
   const result: Record<string, string> = {}
@@ -54,7 +66,7 @@ export const walletHandlers = [
     withNetwork(async ({ request }) => {
       const auth = authenticate(request)
       if (!auth.ok) return auth.response
-      const parsed = walletSchema.safeParse(
+      const parsed = createWalletSchema.safeParse(
         await request.json().catch(() => ({})),
       )
       if (!parsed.success) {
@@ -93,9 +105,9 @@ export const walletHandlers = [
       if (index === -1) {
         return apiError(404, 'NOT_FOUND', 'Carteira não encontrada.')
       }
-      const parsed = walletSchema
-        .omit({ slot: true })
-        .safeParse(await request.json().catch(() => ({})))
+      const parsed = updateWalletSchema.safeParse(
+        await request.json().catch(() => ({})),
+      )
       if (!parsed.success) {
         return apiError(
           422,

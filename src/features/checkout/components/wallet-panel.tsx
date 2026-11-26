@@ -2,17 +2,11 @@ import { Link } from '@tanstack/react-router'
 import { CheckCircle2, CircleAlert, Unplug } from 'lucide-react'
 import { NETWORKS, type Network, type Wallet } from '@/shared/api/types'
 import { shortAddress } from '@/shared/lib/format'
-import { NETWORK_LABEL } from '@/shared/lib/labels'
+import { NETWORK_LABEL, PROVIDER_LABEL } from '@/shared/lib/labels'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/button'
 
 export type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'rejected'
-
-const PROVIDER_LABEL: Record<Wallet['provider'], string> = {
-  metamask: 'MetaMask',
-  coinbase: 'Coinbase Wallet',
-  walletconnect: 'WalletConnect',
-}
 
 export function WalletPanel({
   wallets,

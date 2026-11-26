@@ -5,6 +5,7 @@ import { useSession } from '@/features/auth/queries'
 import { CartCountBadge } from '@/features/cart/components/cart-count-badge'
 import { comingSoon } from '@/shared/lib/coming-soon'
 import { Button } from '@/shared/ui/button'
+import { UserAvatar } from '@/shared/ui/user-avatar'
 
 const navLinkClass =
   'relative py-3 text-base text-foreground transition-colors hover:text-text-accent'
@@ -88,12 +89,7 @@ export function SiteHeader() {
                 to="/perfil"
                 className="flex items-center gap-2 text-sm hover:text-text-accent"
               >
-                <span
-                  aria-hidden
-                  className="flex size-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-ink"
-                >
-                  {user.displayName.charAt(0).toUpperCase()}
-                </span>
+                <UserAvatar name={user.displayName} src={user.avatarUrl} />
                 <span className="hidden max-w-32 truncate lg:inline">
                   {user.displayName}
                 </span>

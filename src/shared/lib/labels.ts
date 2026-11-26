@@ -4,6 +4,8 @@ import type {
   Network,
   NftSort,
   NftTab,
+  WalletProvider,
+  WalletSlot,
 } from '@/shared/api/types'
 
 export const CATEGORY_LABEL: Record<Category, string> = {
@@ -42,4 +44,15 @@ export const EDITION_LABEL: Record<EditionKind, string> = {
   '1/10': '1/10',
   '1/50': '1/50',
   aberta: 'Aberta',
+}
+
+export const PROVIDER_LABEL: Record<WalletProvider, string> = {
+  metamask: 'MetaMask',
+  coinbase: 'Coinbase Wallet',
+  walletconnect: 'WalletConnect',
+}
+
+export const SLOT_LABEL: Record<WalletSlot, string> = {
+  primary: 'Carteira principal',
+  secondary: 'Carteira secundária',
 }

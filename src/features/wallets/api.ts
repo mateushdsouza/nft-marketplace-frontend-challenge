@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSession, userKeys } from '@/features/auth/queries'
 import { api } from '@/shared/api/client'
 import type { Wallet, WalletInput } from '@/shared/api/types'
@@ -39,5 +39,19 @@ export function useWallets() {
     queryKey: walletsKey(user?.id ?? 'anonymous'),
     queryFn: ({ signal }) => fetchWallets(signal),
     enabled: !!user,
+  })
+}
+
+export function useSaveWallet() {
+  const queryClient = useQueryClient()
+  const { user } = useSession()
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string | null; input: WalletInput }) =>
+      id ? updateWallet(id, input) : createWallet(input),
+    // A lista volta da API: a tela mostra o que foi gravado.
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: walletsKey(user?.id ?? 'anonymous'),
+      }),
   })
 }

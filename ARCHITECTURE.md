@@ -144,6 +144,24 @@ padrão em vez de quebrar a página. Valores padrão são removidos da URL
   teste só passa se o rollback funcionar, sem a nova busca mascarar a falta
   dele.
 
+## Perfil e carteiras
+
+- `GET/PATCH /api/profile`: 422 com erros por campo; 409 `EMAIL_TAKEN` para
+  e-mail de outra conta (e `CONFLICT` para nome de usuário repetido). A
+  resposta do `PATCH` é gravada no cache do perfil **e** no usuário da sessão,
+  então o nome e a foto do cabeçalho mudam sem nova requisição.
+- `POST/DELETE /api/profile/avatar`: o arquivo vai como data URL em JSON.
+  PNG, JPG ou WebP, até **1 MB** (o banco do mock fica no `localStorage`, que
+  tem pouco espaço). O front valida antes de enviar e mostra a prévia com
+  `URL.createObjectURL`, revogada no cleanup do efeito.
+- `POST /api/profile/password`: confere o hash da senha atual (422 no campo
+  `currentPassword` se errada), gera sal novo e guarda só o hash.
+- Carteiras: um espaço principal e um secundário por usuário. O endereço é
+  validado **conforme a rede** (`src/shared/lib/wallet-address.ts`, usado pelo
+  front e pelo mock): Ethereum/Polygon `0x` + 40 hexadecimais; Solana base58
+  com 32 a 44 caracteres. Editar uma carteira desconecta a sessão simulada
+  dela.
+
 ## Sessão e autenticação
 
 - **Token**: o login devolve `{ token, user, expiresAt }`. O token fica no

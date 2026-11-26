@@ -5,6 +5,7 @@ import { controlHandlers } from './handlers/control'
 import { favoriteHandlers } from './handlers/favorites'
 import { nftHandlers } from './handlers/nfts'
 import { orderHandlers } from './handlers/orders'
+import { profileHandlers } from './handlers/profile'
 import { walletHandlers } from './handlers/wallets'
 import { resumePendingOrders } from './orders'
 import { realtimeHandlers } from './realtime'
@@ -16,6 +17,7 @@ export const worker = setupWorker(
   ...cartHandlers,
   ...nftHandlers,
   ...favoriteHandlers,
+  ...profileHandlers,
   ...walletHandlers,
   ...orderHandlers,
   ...realtimeHandlers,
