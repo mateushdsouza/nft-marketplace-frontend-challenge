@@ -1,6 +1,5 @@
 import type { Socket } from 'socket.io-client'
 import type { EthAmount, NftEdition, Order } from '@/shared/api/types'
-import { backendReady } from '@/shared/api/backend-ready'
 
 // Formato de todo evento: id estável, recurso afetado e versão.
 export interface RealtimeEvent<TData> {
@@ -22,7 +21,6 @@ export type OrderUpdatedEvent = RealtimeEvent<Order>
 // WebSocket global quando o módulo carrega. Carregando depois do MSW iniciar,
 // ele usa o WebSocket que o MSW intercepta. Sem mocks, não muda nada.
 export async function createSocket(): Promise<Socket> {
-  await backendReady
   const { io } = await import('socket.io-client')
   return io(window.location.origin, {
     path: '/socket.io',

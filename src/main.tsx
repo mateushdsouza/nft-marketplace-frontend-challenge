@@ -3,7 +3,6 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createQueryClient } from './app/query-client'
-import { setBackendReady } from './shared/api/backend-ready'
 import './index.css'
 import { routeTree } from './routeTree.gen'
 
@@ -24,8 +23,7 @@ declare module '@tanstack/react-router' {
   }
 }
 
-// O app desenha na hora. Com os mocks ligados, o worker do MSW sobe em
-// paralelo e as chamadas à API esperam por ele (src/shared/api/backend-ready.ts).
+// O worker do MSW precisa estar ativo antes da primeira requisição.
 // Import dinâmico: sem mocks, o código do mock nem entra no bundle principal.
 async function enableMocks() {
   if (import.meta.env.VITE_ENABLE_MOCKS !== 'true') return
@@ -33,14 +31,12 @@ async function enableMocks() {
   await startMocks()
 }
 
-enableMocks()
-  .catch((error: unknown) => console.error('Falha ao iniciar os mocks', error))
-  .finally(setBackendReady)
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-  </StrictMode>,
-)
+enableMocks().then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </StrictMode>,
+  )
+})
