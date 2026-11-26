@@ -126,7 +126,7 @@ const lines = [
   '',
   'Metas: Performance ≥ 90, Acessibilidade ≥ 95, Boas práticas ≥ 95, SEO ≥ 90.',
   'Valores abaixo da meta aparecem com ⚠. Os relatórios completos (HTML e JSON)',
-  `de cada medição estão em \`${REPORTS}/<perfil>/\`.`,
+  `de cada medição estão em \`${REPORTS.replaceAll('\\', '/')}/<perfil>/\`.`,
   '',
 ]
 writeFileSync(RESULTS, lines.join('\n'))

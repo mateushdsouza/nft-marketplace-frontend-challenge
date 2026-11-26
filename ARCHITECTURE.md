@@ -419,6 +419,15 @@ o refresh funcionam no deploy.
   de fontes muda entre sistemas, então em Linux/macOS é preciso gerar as
   próprias: `npx playwright test visual --update-snapshots`.
 
+## Performance (Lighthouse)
+
+Configuração, comandos, resultados e a análise do que ficou abaixo da meta
+estão em [`lighthouse/README.md`](lighthouse/README.md). Resumo do deploy
+(mediana de 3): Acessibilidade, Boas práticas e SEO 100 nas quatro
+combinações; Performance 99 no desktop e 77–86 no mobile. O mobile fica abaixo
+de 90 principalmente porque o backend simulado (MSW, fixtures, banco em
+memória) é baixado e executado no navegador antes da primeira renderização.
+
 ## Decisões e desvios
 
 - **MSW 2 em vez de 3**: o `@mswjs/socket.io-binding` exige `msw ^2.10`.
