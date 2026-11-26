@@ -76,7 +76,7 @@ test('rota privada leva ao login e volta para ela depois', async ({ page }) => {
 
   await loginAs(page, ALICE, '')
   await expect(page).toHaveURL('/perfil')
-  await expect(page.getByText('Conectado como Alice Martins')).toBeVisible()
+  await expect(page.getByLabel('Nome de exibição')).toHaveValue('Alice Martins')
 })
 
 test('logout limpa a sessão e troca de usuário não mostra dados do anterior', async ({
@@ -84,7 +84,7 @@ test('logout limpa a sessão e troca de usuário não mostra dados do anterior',
 }) => {
   await loginAs(page, ALICE)
   await page.goto('/perfil')
-  await expect(page.getByText('alice@example.com')).toBeVisible()
+  await expect(page.getByLabel('E-mail')).toHaveValue(ALICE.email)
 
   await page.getByRole('button', { name: 'Sair' }).click()
   await expect(page.getByRole('link', { name: 'Entrar' })).toBeVisible()
@@ -93,8 +93,8 @@ test('logout limpa a sessão e troca de usuário não mostra dados do anterior',
   await expect(page).toHaveURL(/\/entrar/)
 
   await loginAs(page, BOB, '')
-  await expect(page.getByText('bob@example.com')).toBeVisible()
-  await expect(page.getByText('alice@example.com')).toHaveCount(0)
+  await expect(page.getByLabel('E-mail')).toHaveValue(BOB.email)
+  await expect(page.getByLabel('Nome de exibição')).toHaveValue('Bob Ferreira')
 })
 
 test('sessão expirada leva ao login preservando o caminho', async ({
