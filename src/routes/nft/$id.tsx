@@ -7,17 +7,17 @@ import {
   useRouter,
   type ErrorComponentProps,
 } from '@tanstack/react-router'
-import { Heart, Link2, ShoppingCart, Star } from 'lucide-react'
+import { Link2, ShoppingCart, Star } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useAddToCart } from '@/features/cart/mutations'
 import { nftDetailQuery } from '@/features/catalog/queries'
+import { FavoriteButton } from '@/features/favorites/components/favorite-button'
 import { EditionPicker } from '@/features/nft-detail/components/edition-picker'
 import { NftGallery } from '@/features/nft-detail/components/nft-gallery'
 import { RelatedNfts } from '@/features/nft-detail/components/related-nfts'
 import { ApiError } from '@/shared/api/errors'
 import type { Nft } from '@/shared/api/types'
-import { comingSoon } from '@/shared/lib/coming-soon'
 import { CATEGORY_LABEL, NETWORK_LABEL } from '@/shared/lib/labels'
 import { formatEth } from '@/shared/lib/money'
 import { Button } from '@/shared/ui/button'
@@ -237,14 +237,7 @@ function NftInfo({ nft }: { nft: Nft }) {
           >
             <ShoppingCart aria-hidden />
           </Button>
-          <Button
-            variant="outline"
-            className="h-10 rounded-button"
-            onClick={() => comingSoon('Favoritar')}
-          >
-            <Heart aria-hidden />
-            Favoritar
-          </Button>
+          <FavoriteButton nftId={nft.id} nftName={nft.name} />
         </div>
       </div>
 

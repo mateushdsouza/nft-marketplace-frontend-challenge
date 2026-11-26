@@ -189,6 +189,12 @@ export interface Quote {
   expiresAt: string
 }
 
+// Favoritos
+
+export interface FavoritesResponse {
+  nftIds: string[]
+}
+
 // Carteiras
 
 export type WalletSlot = 'primary' | 'secondary'

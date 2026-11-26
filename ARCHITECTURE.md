@@ -72,6 +72,7 @@ salvos no `localStorage`.
 | `catalog-empty`    | catálogo sem resultados                                                                                       |
 | `wallet-rejected`  | a carteira recusa a conexão                                                                                   |
 | `payment-rejected` | o pedido é criado e depois recusado pela rede                                                                 |
+| `favorite-error`   | a API de favoritos responde 503 depois de 800 ms (rollback da atualização otimista)                           |
 | `order-timeout`    | o pedido é criado, mas a primeira resposta se perde (erro de rede); a segunda tentativa recebe o mesmo pedido |
 
 A latência "aleatória" usa um gerador com semente fixa (mulberry32). Depois de um
@@ -124,6 +125,24 @@ padrão em vez de quebrar a página. Valores padrão são removidos da URL
   fica desabilitado.
 - A quantidade vai de 1 até o estoque da edição. Se o estoque cair depois da
   escolha (evento em tempo real), o valor exibido é limitado ao disponível.
+
+## Favoritos (atualização otimista)
+
+- `GET /api/favorites` devolve `{ nftIds }`; `PUT` e `DELETE
+/api/favorites/:nftId` incluem/removem e devolvem a lista atualizada. Exigem
+  sessão; a chave do cache é `["user", userId, "favorites"]`.
+- Visitante que clica em "Favoritar" vai para o login com `?redirect=` e volta
+  ao NFT.
+- **Otimista** (`src/features/favorites/mutations.ts`): `onMutate` cancela
+  buscas de favoritos em andamento, guarda o estado atual e grava o novo;
+  `onError` devolve o estado guardado e mostra um toast; `onSettled` confere
+  com a API **só quando a última mutation em andamento termina**
+  (`isMutating === 1`), para cliques rápidos não serem desfeitos por uma
+  resposta intermediária.
+- O cenário `favorite-error` deixa a API de favoritos (leitura e escrita) fora
+  do ar com 800 ms de atraso. A leitura também falha de propósito: assim o
+  teste só passa se o rollback funcionar, sem a nova busca mascarar a falta
+  dele.
 
 ## Sessão e autenticação
 

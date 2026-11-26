@@ -16,6 +16,8 @@ export const SCENARIOS = {
   'catalog-empty': 'Catálogo sem resultados',
   'wallet-rejected': 'A carteira recusa a conexão',
   'payment-rejected': 'Pedidos são recusados pela rede',
+  'favorite-error':
+    'A API de favoritos responde 503 (rollback da atualização otimista)',
   'order-timeout':
     'O pedido é criado, mas a primeira resposta se perde (recuperação por idempotência)',
 } as const

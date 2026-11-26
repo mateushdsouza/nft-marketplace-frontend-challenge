@@ -2,6 +2,7 @@ import { setupWorker } from 'msw/browser'
 import { authHandlers } from './handlers/auth'
 import { cartHandlers } from './handlers/cart'
 import { controlHandlers } from './handlers/control'
+import { favoriteHandlers } from './handlers/favorites'
 import { nftHandlers } from './handlers/nfts'
 import { orderHandlers } from './handlers/orders'
 import { walletHandlers } from './handlers/wallets'
@@ -14,6 +15,7 @@ export const worker = setupWorker(
   ...authHandlers,
   ...cartHandlers,
   ...nftHandlers,
+  ...favoriteHandlers,
   ...walletHandlers,
   ...orderHandlers,
   ...realtimeHandlers,
