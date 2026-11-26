@@ -87,7 +87,9 @@ test('logout limpa a sessão e troca de usuário não mostra dados do anterior',
   await expect(page.getByLabel('E-mail')).toHaveValue(ALICE.email)
 
   await page.getByRole('button', { name: 'Sair' }).click()
-  await expect(page.getByRole('link', { name: 'Entrar' })).toBeVisible()
+  await expect(
+    page.getByRole('banner').getByRole('link', { name: 'Entrar' }),
+  ).toBeVisible()
 
   await page.goto('/perfil')
   await expect(page).toHaveURL(/\/entrar/)
