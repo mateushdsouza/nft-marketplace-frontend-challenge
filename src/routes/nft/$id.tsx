@@ -3,12 +3,14 @@ import {
   Link,
   createFileRoute,
   notFound,
+  useNavigate,
   useRouter,
   type ErrorComponentProps,
 } from '@tanstack/react-router'
 import { Heart, Link2, ShoppingCart, Star } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { useAddToCart } from '@/features/cart/mutations'
 import { nftDetailQuery } from '@/features/catalog/queries'
 import { EditionPicker } from '@/features/nft-detail/components/edition-picker'
 import { NftGallery } from '@/features/nft-detail/components/nft-gallery'
@@ -120,6 +122,30 @@ function NftInfo({ nft }: { nft: Nft }) {
   // a quantidade nunca passa do disponível.
   const qty = Math.min(quantity, Math.max(available, 1))
   const canBuy = available > 0
+  const addToCart = useAddToCart()
+  const navigate = useNavigate()
+
+  function handleAdd(goToCart: boolean) {
+    if (!editionId) return
+    addToCart.mutate(
+      { nftId: nft.id, editionId, quantity: qty },
+      {
+        onSuccess: () => {
+          if (goToCart) {
+            navigate({ to: '/carrinho' })
+            return
+          }
+          toast.success(`${nft.name} adicionado ao carrinho.`, {
+            action: {
+              label: 'Ver carrinho',
+              onClick: () => navigate({ to: '/carrinho' }),
+            },
+          })
+        },
+        onError: (error) => toast.error(error.message),
+      },
+    )
+  }
 
   function selectEdition(id: string) {
     setEditionId(id)
@@ -196,8 +222,8 @@ function NftInfo({ nft }: { nft: Nft }) {
         <div className="flex gap-3">
           <Button
             className="h-10 rounded-button px-8 font-bold uppercase"
-            disabled={!canBuy}
-            onClick={() => comingSoon('O carrinho')}
+            disabled={!canBuy || addToCart.isPending}
+            onClick={() => handleAdd(true)}
           >
             Comprar
           </Button>
@@ -206,8 +232,8 @@ function NftInfo({ nft }: { nft: Nft }) {
             size="icon"
             className="size-10 rounded-button"
             aria-label="Adicionar ao carrinho"
-            disabled={!canBuy}
-            onClick={() => comingSoon('O carrinho')}
+            disabled={!canBuy || addToCart.isPending}
+            onClick={() => handleAdd(false)}
           >
             <ShoppingCart aria-hidden />
           </Button>

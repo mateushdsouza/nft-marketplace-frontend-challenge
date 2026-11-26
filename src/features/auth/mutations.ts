@@ -1,10 +1,30 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { toast } from 'sonner'
+import { mergeGuestCart } from '@/features/cart/api'
+import { guestCart } from '@/shared/api/guest-cart'
 import { sessionToken } from '@/shared/api/session-token'
 import type { Session } from '@/shared/api/types'
 import { login, logout, register } from './api'
 import { replaceSession } from './queries'
+
+// Itens que o visitante colocou no carrinho vão para o carrinho da conta.
+// Se a junção falhar, o id do visitante é mantido para tentar no próximo login.
+async function bringGuestCart() {
+  const guestId = guestCart.get()
+  if (!guestId) return
+  try {
+    const { adjusted } = await mergeGuestCart(guestId)
+    guestCart.clear()
+    if (adjusted) {
+      toast.info(
+        'Alguns itens do seu carrinho tiveram a quantidade ajustada ao estoque.',
+      )
+    }
+  } catch {
+    toast.error('Não foi possível trazer os itens do carrinho de visitante.')
+  }
+}
 
 // Entrar numa conta começa sem nenhum dado privado em cache: nada do
 // usuário anterior fica visível para o novo.
@@ -14,6 +34,8 @@ function useStartSession() {
   return async (session: Session, redirectTo?: string) => {
     sessionToken.set(session.token)
     replaceSession(queryClient, session)
+    await bringGuestCart()
+    queryClient.removeQueries({ queryKey: ['guest'] })
     await router.invalidate()
     await router.navigate({ href: redirectTo ?? '/' })
   }

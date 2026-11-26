@@ -161,6 +161,45 @@ padrão em vez de quebrar a página. Valores padrão são removidos da URL
 | POST   | `/api/auth/logout`       | 204                                                       |
 | POST   | `/api/__sessions/expire` | controle: expira todas as sessões                         |
 
+## Carrinho
+
+- **Onde fica**: na API (mock), não no front. O front guarda só quem é o dono:
+  o token do usuário ou o id do carrinho de visitante
+  (`kurio:guest-cart` no `localStorage`, enviado no header `X-Guest-Cart`).
+  O id do visitante é criado na primeira inclusão.
+- **Isolamento**: a chave do cache é `["user", userId, "cart"]` ou
+  `["guest", guestId, "cart"]`. No mock, o carrinho de usuário só é acessível
+  com token válido; ids de visitante têm outro prefixo.
+- **Toda mutation devolve o carrinho inteiro** já recalculado. O front grava essa
+  resposta no cache (`setQueryData`) e não soma nada sozinho. Antes de gravar,
+  cancela leituras em andamento do carrinho: um `GET` que saiu antes poderia
+  responder depois com o estado antigo (o teste "Comprar" pegou isso).
+- **Estoque**: incluir ou alterar acima do disponível devolve 409 com a
+  quantidade que existe. Se o estoque cair depois (outro comprador, evento em
+  tempo real), o item mostra um aviso e o checkout fica bloqueado até ajustar.
+- **Cupom**: fica salvo no carrinho (`PUT/DELETE /api/cart/coupon`). Código
+  inexistente ou expirado devolve 422 com erro no campo. Se um cupom aplicado
+  expirar depois, a cotação falha e o resumo pede para removê-lo.
+- **Cotação** (`POST /api/quote`): subtotal, desconto, taxa de rede e total são
+  calculados na API com `decimal.js`. A query da cotação usa na chave os itens,
+  quantidades, preço e versão de cada NFT, o cupom e a rede. Qualquer mudança
+  gera uma cotação nova. A cotação vale 5 minutos e é guardada para o checkout.
+- **Login com itens de visitante**: logo após o login (ou cadastro), o front chama
+  `POST /api/cart/merge`. A API soma as quantidades respeitando o estoque, avisa
+  se precisou ajustar e apaga o carrinho do visitante. Se a junção falhar, o id
+  do visitante é mantido para tentar no próximo login.
+
+| Método | Rota                      | Respostas                                       |
+| ------ | ------------------------- | ----------------------------------------------- |
+| GET    | `/api/cart`               | 200 carrinho (vazio se não houver dono)         |
+| POST   | `/api/cart/items`         | 201 carrinho · 404 · 409 sem estoque · 422      |
+| PATCH  | `/api/cart/items/:itemId` | 200 · 404 · 409 · 422                           |
+| DELETE | `/api/cart/items/:itemId` | 200 carrinho                                    |
+| PUT    | `/api/cart/coupon`        | 200 · 422 `COUPON_INVALID` / `COUPON_EXPIRED`   |
+| DELETE | `/api/cart/coupon`        | 200                                             |
+| POST   | `/api/cart/merge`         | 200 `{ cart, adjusted }` · 401                  |
+| POST   | `/api/quote`              | 200 cotação · 404 · 409 sem estoque · 422 cupom |
+
 ## Rotas
 
 URLs em português, porque são texto que o usuário vê. Código, API e eventos
@@ -204,6 +243,7 @@ o refresh funcionam no deploy.
   - no mobile, a barra inferior tem Início, Favoritos, Carrinho e Perfil; o botão central do Figma não tem função definida e foi omitido.
 - **Detalhe vs. Figma**: o Figma repete a mesma arte nas 4 miniaturas; aqui elas mostram recortes da arte (completa, rosto, acessórios, roupa). A aba "Avaliações" e os textos de royalties/contrato ficaram de fora, porque a API não tem esses dados. "Compartilhar" copia o link do NFT.
 - **Login e cadastro como páginas**: no desktop do Figma o login é um modal sobre a home; aqui `/entrar` e `/cadastro` são páginas com o mesmo card, para funcionar com acesso direto, refresh e `?redirect=`. Os campos têm rótulo visível (o Figma só usa placeholder), por acessibilidade. Login social e "Esqueceu a senha?" ficam fora do escopo e avisam isso.
+- **Carrinho vs. Figma**: a seção "Colecionadores também viram" ficou de fora. O resumo mostra o total com o rótulo "Total" e a taxa como "Taxa estimada (rede)". No carrinho a taxa é sempre de Ethereum; a rede é escolhida no pagamento.
 - **Ações fora do escopo** (Criadores, Aprenda, Favoritos antes do login) mostram um toast "ainda não está disponível" em vez de parecer que funcionaram.
 - **Ícones**: `lucide-react` (já vem com o shadcn/ui) no lugar dos SVGs do Iconly, por serem parecidos e já otimizados.
 - **Imagens**: as artes do Figma foram exportadas em WebP 800×800. Ainda não há

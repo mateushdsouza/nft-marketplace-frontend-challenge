@@ -1,5 +1,6 @@
 import { setupWorker } from 'msw/browser'
 import { authHandlers } from './handlers/auth'
+import { cartHandlers } from './handlers/cart'
 import { controlHandlers } from './handlers/control'
 import { nftHandlers } from './handlers/nfts'
 import { applyScenarioFromUrl } from './scenarios'
@@ -7,6 +8,7 @@ import { applyScenarioFromUrl } from './scenarios'
 export const worker = setupWorker(
   ...controlHandlers,
   ...authHandlers,
+  ...cartHandlers,
   ...nftHandlers,
 )
 

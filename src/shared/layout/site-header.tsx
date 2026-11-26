@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { LogIn, LogOut, Search, ShoppingCart } from 'lucide-react'
 import { useLogout } from '@/features/auth/mutations'
 import { useSession } from '@/features/auth/queries'
+import { CartCountBadge } from '@/features/cart/components/cart-count-badge'
 import { comingSoon } from '@/shared/lib/coming-soon'
 import { Button } from '@/shared/ui/button'
 
@@ -76,10 +77,10 @@ export function SiteHeader() {
           </Link>
           <Link
             to="/carrinho"
-            className="hidden rounded-button p-1 text-foreground hover:text-text-accent md:inline-flex"
-            aria-label="Carrinho"
+            className="relative hidden rounded-button p-1 text-foreground hover:text-text-accent md:inline-flex"
           >
             <ShoppingCart className="size-5" aria-hidden />
+            <CartCountBadge />
           </Link>
           {user ? (
             <div className="flex items-center gap-3">

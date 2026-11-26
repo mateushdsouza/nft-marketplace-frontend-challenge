@@ -144,7 +144,9 @@ export interface CartItem {
 
 export interface Cart {
   items: CartItem[]
+  couponCode: string | null
   subtotalEth: EthAmount
+  itemCount: number
   updatedAt: string
 }
 

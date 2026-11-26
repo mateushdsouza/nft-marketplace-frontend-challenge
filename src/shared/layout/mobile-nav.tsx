@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { Heart, House, ShoppingCart, User } from 'lucide-react'
+import { CartCountBadge } from '@/features/cart/components/cart-count-badge'
 import { comingSoon } from '@/shared/lib/coming-soon'
 
 const itemClass =
@@ -39,8 +40,11 @@ export function MobileNav() {
             className={itemClass}
             activeProps={{ className: 'text-primary', 'aria-current': 'page' }}
           >
-            <ShoppingCart className="size-5" aria-hidden />
-            Carrinho
+            <span className="relative">
+              <ShoppingCart className="size-5" aria-hidden />
+              <CartCountBadge />
+            </span>
+            <span aria-hidden>Carrinho</span>
           </Link>
         </li>
         <li className="flex flex-1">

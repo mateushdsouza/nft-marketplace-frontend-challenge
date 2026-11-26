@@ -24,6 +24,7 @@ export interface SessionRecord {
 
 export interface CartRecord {
   items: Array<CartItemInput & { id: string }>
+  couponCode?: string | null
   updatedAt: string
 }
 
