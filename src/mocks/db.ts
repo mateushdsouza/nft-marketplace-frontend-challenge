@@ -36,6 +36,9 @@ export interface OrderRecord extends Order {
   userId: string
   idempotencyKey: string
   requestHash: string
+  // Campos internos do mock: resultado decidido na criação e quando aplicá-lo.
+  outcome: 'confirmed' | 'rejected'
+  settleAt: number
 }
 
 export interface DbState {

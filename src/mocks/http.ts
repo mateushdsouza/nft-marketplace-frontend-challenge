@@ -15,9 +15,17 @@ export function apiError(
   code: ApiErrorCode,
   message: string,
   fieldErrors?: Record<string, string>,
+  details?: unknown,
 ) {
   return HttpResponse.json(
-    { error: { code, message, ...(fieldErrors ? { fieldErrors } : {}) } },
+    {
+      error: {
+        code,
+        message,
+        ...(fieldErrors ? { fieldErrors } : {}),
+        ...(details !== undefined ? { details } : {}),
+      },
+    },
     { status },
   )
 }

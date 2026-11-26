@@ -14,6 +14,10 @@ export const SCENARIOS = {
   offline: 'Falha de conexão em toda a API',
   'server-error': 'HTTP 503 em toda a API',
   'catalog-empty': 'Catálogo sem resultados',
+  'wallet-rejected': 'A carteira recusa a conexão',
+  'payment-rejected': 'Pedidos são recusados pela rede',
+  'order-timeout':
+    'O pedido é criado, mas a primeira resposta se perde (recuperação por idempotência)',
 } as const
 
 export type ScenarioName = keyof typeof SCENARIOS

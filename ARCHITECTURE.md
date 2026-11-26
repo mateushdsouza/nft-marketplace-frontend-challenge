@@ -61,15 +61,18 @@ handlers do MSW. Se um contrato muda, o TypeScript acusa os dois.
 Escolhidos por `?scenario=<nome>` na URL ou por `POST /api/__scenario`. Ficam
 salvos no `localStorage`.
 
-| Cenário          | Efeito                                                                         |
-| ---------------- | ------------------------------------------------------------------------------ |
-| `default`        | 150–400 ms de latência                                                         |
-| `fast`           | sem latência (usado nos testes)                                                |
-| `slow`           | 2,5 s por requisição (ver skeletons)                                           |
-| `random-latency` | 100–1500 ms, sequência fixa por semente: respostas fora de ordem reproduzíveis |
-| `offline`        | erro de rede em toda a API                                                     |
-| `server-error`   | 503 em toda a API                                                              |
-| `catalog-empty`  | catálogo sem resultados                                                        |
+| Cenário            | Efeito                                                                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `default`          | 150–400 ms de latência                                                                                        |
+| `fast`             | sem latência (usado nos testes)                                                                               |
+| `slow`             | 2,5 s por requisição (ver skeletons)                                                                          |
+| `random-latency`   | 100–1500 ms, sequência fixa por semente: respostas fora de ordem reproduzíveis                                |
+| `offline`          | erro de rede em toda a API                                                                                    |
+| `server-error`     | 503 em toda a API                                                                                             |
+| `catalog-empty`    | catálogo sem resultados                                                                                       |
+| `wallet-rejected`  | a carteira recusa a conexão                                                                                   |
+| `payment-rejected` | o pedido é criado e depois recusado pela rede                                                                 |
+| `order-timeout`    | o pedido é criado, mas a primeira resposta se perde (erro de rede); a segunda tentativa recebe o mesmo pedido |
 
 A latência "aleatória" usa um gerador com semente fixa (mulberry32). Depois de um
 reset, a sequência é sempre a mesma, e os testes ficam reproduzíveis.
@@ -202,6 +205,72 @@ padrão em vez de quebrar a página. Valores padrão são removidos da URL
 | POST   | `/api/cart/merge`         | 200 `{ cart, adjusted }` · 401                  |
 | POST   | `/api/quote`              | 200 cotação · 404 · 409 sem estoque · 422 cupom |
 
+## Pagamento e pedidos
+
+Fluxo em `/pagamento` (rota privada):
+
+1. **Dados do colecionador** (react-hook-form + zod) e **carteira e rede**. As
+   carteiras vêm de `GET /api/wallets`. A rede precisa ser a da carteira.
+2. **Conectar a carteira**: `POST /api/wallets/:id/connect` simula a aprovação
+   (ou a recusa, no cenário `wallet-rejected`). A conexão vive só na memória do
+   mock: recarregar a página "desconecta", como numa extensão real. Sem conexão
+   não há revisão.
+3. **Revisão**: "Revisar pedido" pede uma cotação nova (`POST /api/quote`). É
+   essa cotação, com id, que o usuário vê e confirma.
+4. **Confirmação**: `POST /api/orders` com `{ quoteId, walletId, buyer }` e o
+   header `Idempotency-Key`.
+
+### Idempotência
+
+- A chave é gerada **uma vez por tentativa** e guardada no `sessionStorage`
+  junto do `quoteId` (`src/features/checkout/attempt.ts`). Clique repetido, erro
+  de rede ou refresh reenviam a **mesma** chave.
+- Na API: mesma chave + mesmo conteúdo → devolve o pedido que já existe; mesma
+  chave + conteúdo diferente → 409 `IDEMPOTENCY_CONFLICT`. A checagem da chave
+  vem antes de qualquer outra validação.
+- O botão "Confirmar compra" fica desabilitado durante o envio, e a função
+  ignora cliques enquanto há um envio em andamento.
+- Cotação nova (preço mudou) → `quoteId` novo → chave nova: é outra tentativa.
+
+### Revalidação antes de confirmar
+
+A API refaz a cotação com o catálogo atual (preço, estoque, cupom, taxa). Se
+algo mudou, ou se a cotação expirou (5 min), responde 409 `QUOTE_CHANGED` com a
+cotação nova em `error.details.quote`. A tela mostra o total antigo e o novo e
+exige um novo clique em "Confirmar compra". Estoque esgotado ou cupom vencido
+voltam como 409/422 e mandam o usuário de volta ao formulário.
+
+### Estados do pedido
+
+`pending` → `confirmed` | `rejected` (terminais). O resultado é decidido na
+criação (pelo cenário) e aplicado ~2 s depois. O mock guarda no próprio pedido o
+resultado e o horário de aplicação, então a liquidação acontece por timer **ou**
+na próxima consulta, inclusive depois de um refresh.
+
+- **Confirmado**: baixa o estoque, aumenta a versão dos NFTs e remove do
+  carrinho **só os itens e quantidades comprados**. Gera hash e link de
+  explorador simulados.
+- **Recusado**: nada muda no carrinho nem no estoque.
+- A tela `/pedidos/$id` consulta o pedido a cada 1 s enquanto ele está pendente.
+  O id na URL permite recuperar o pedido depois de recarregar a página. A
+  confirmação só aparece quando a API devolve `status: "confirmed"`.
+- **Recibo como snapshot**: o pedido guarda itens, preços, desconto, taxa e
+  total da cotação confirmada. O recibo lê só o pedido, nunca o catálogo.
+- **Isolamento**: `GET /api/orders/:id` de outro usuário responde 403, e a tela
+  mostra "Pedido não encontrado" (igual ao 404, sem revelar que o pedido existe).
+
+| Método | Rota                          | Respostas                                                                                                                  |
+| ------ | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/api/wallets`                | 200 · 401                                                                                                                  |
+| POST   | `/api/wallets`                | 201 · 409 espaço ocupado · 422                                                                                             |
+| PATCH  | `/api/wallets/:id`            | 200 · 404 · 422                                                                                                            |
+| POST   | `/api/wallets/:id/connect`    | 200 · 409 `WALLET_REJECTED`                                                                                                |
+| POST   | `/api/wallets/:id/disconnect` | 200                                                                                                                        |
+| POST   | `/api/orders`                 | 201 criado · 200 mesma chave · 409 `IDEMPOTENCY_CONFLICT` / `QUOTE_CHANGED` / `WALLET_DISCONNECTED` / `OUT_OF_STOCK` · 422 |
+| GET    | `/api/orders`                 | 200 pedidos do usuário                                                                                                     |
+| GET    | `/api/orders/:id`             | 200 · 403 de outro usuário · 404                                                                                           |
+| POST   | `/api/__nfts/:id`             | controle: altera preço ou estoque de um NFT                                                                                |
+
 ## Rotas
 
 URLs em português, porque são texto que o usuário vê. Código, API e eventos
@@ -246,6 +315,8 @@ o refresh funcionam no deploy.
 - **Detalhe vs. Figma**: o Figma repete a mesma arte nas 4 miniaturas; aqui elas mostram recortes da arte (completa, rosto, acessórios, roupa). A aba "Avaliações" e os textos de royalties/contrato ficaram de fora, porque a API não tem esses dados. "Compartilhar" copia o link do NFT.
 - **Login e cadastro como páginas**: no desktop do Figma o login é um modal sobre a home; aqui `/entrar` e `/cadastro` são páginas com o mesmo card, para funcionar com acesso direto, refresh e `?redirect=`. Os campos têm rótulo visível (o Figma só usa placeholder), por acessibilidade. Login social e "Esqueceu a senha?" ficam fora do escopo e avisam isso.
 - **Carrinho vs. Figma**: a seção "Colecionadores também viram" ficou de fora. O resumo mostra o total com o rótulo "Total" e a taxa como "Taxa estimada (rede)". No carrinho a taxa é sempre de Ethereum; a rede é escolhida no pagamento.
+- **Pagamento vs. Figma**: o formulário pede nome de exibição, nome de usuário, e-mail e observação. Endereço, tipo de carteira e rede vêm das carteiras cadastradas (seleção + rede) em vez de campos soltos; ENS, nome do perfil e código de indicação ficaram de fora. "Usar outra carteira?" virou um link para `/carteiras`. Antes de confirmar existe uma etapa de revisão, que o Figma não mostra e o enunciado exige.
+- **Timeout do pedido**: simulado como resposta perdida (erro de rede depois de o pedido ser criado), em vez de esperar o timeout de 15 s do Axios, para os testes não ficarem lentos. O efeito para o front é o mesmo: ele não sabe se o pedido existe e reenvia com a mesma chave.
 - **Ações fora do escopo** (Criadores, Aprenda, Favoritos antes do login) mostram um toast "ainda não está disponível" em vez de parecer que funcionaram.
 - **Ícones**: `lucide-react` (já vem com o shadcn/ui) no lugar dos SVGs do Iconly, por serem parecidos e já otimizados.
 - **Imagens**: as artes do Figma foram exportadas em WebP 800×800. Ainda não há

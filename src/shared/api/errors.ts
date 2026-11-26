@@ -7,18 +7,22 @@ export class ApiError extends Error {
   readonly status: number
   readonly code: ApiErrorCode
   readonly fieldErrors: Record<string, string>
+  // Dados extras do erro (ex.: a cotação nova num 409 QUOTE_CHANGED).
+  readonly details: unknown
 
   constructor(
     status: number,
     code: ApiErrorCode,
     message: string,
     fieldErrors: Record<string, string> = {},
+    details: unknown = null,
   ) {
     super(message)
     this.name = 'ApiError'
     this.status = status
     this.code = code
     this.fieldErrors = fieldErrors
+    this.details = details
   }
 
   // Falhas que vale a pena repetir automaticamente.
@@ -62,8 +66,8 @@ export function toApiError(error: unknown): unknown {
   }
 
   if (isErrorBody(response.data)) {
-    const { code, message, fieldErrors } = response.data.error
-    return new ApiError(response.status, code, message, fieldErrors)
+    const { code, message, fieldErrors, details } = response.data.error
+    return new ApiError(response.status, code, message, fieldErrors, details)
   }
 
   return new ApiError(

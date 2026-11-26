@@ -258,6 +258,8 @@ export type ApiErrorCode =
   | 'COUPON_INVALID'
   | 'COUPON_EXPIRED'
   | 'IDEMPOTENCY_CONFLICT'
+  | 'WALLET_REJECTED'
+  | 'WALLET_DISCONNECTED'
   | 'SERVICE_UNAVAILABLE'
   | 'NETWORK_ERROR'
   | 'TIMEOUT'
@@ -268,5 +270,6 @@ export interface ApiErrorBody {
     code: ApiErrorCode
     message: string
     fieldErrors?: Record<string, string>
+    details?: unknown
   }
 }
