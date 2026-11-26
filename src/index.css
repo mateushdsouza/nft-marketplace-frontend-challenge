@@ -107,3 +107,11 @@
     @apply bg-ink font-sans text-foreground antialiased;
   }
 }
+
+/* Seções longe da primeira tela: o navegador pula estilo, layout e pintura
+   até o usuário chegar perto. A altura estimada evita a barra de rolagem
+   "pular" quando elas são desenhadas. */
+@utility defer-render {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}

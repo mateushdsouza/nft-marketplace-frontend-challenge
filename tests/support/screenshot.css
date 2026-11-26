@@ -9,3 +9,9 @@
 [data-sonner-toaster] {
   display: none !important;
 }
+
+/* Seções com content-visibility: auto só são desenhadas perto da tela.
+   No print da página inteira, tudo precisa estar desenhado. */
+.defer-render {
+  content-visibility: visible !important;
+}

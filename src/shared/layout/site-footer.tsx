@@ -120,7 +120,7 @@ function Newsletter() {
 
 export function SiteFooter() {
   return (
-    <footer className="mx-auto mt-24 mb-24 max-w-content px-6 md:mb-6">
+    <footer className="defer-render mx-auto mt-24 mb-24 max-w-content px-6 md:mb-6">
       <div className="grid gap-8 rounded-t-card bg-surface p-8 md:grid-cols-2 lg:grid-cols-[repeat(3,1fr)_1.35fr] lg:gap-0">
         {FEATURES.map((feature) => (
           <section
