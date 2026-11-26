@@ -271,6 +271,29 @@ na próxima consulta, inclusive depois de um refresh.
 | GET    | `/api/orders/:id`             | 200 · 403 de outro usuário · 404                                                                                           |
 | POST   | `/api/__nfts/:id`             | controle: altera preço ou estoque de um NFT                                                                                |
 
+## Tempo real (Socket.IO)
+
+### Transporte no ambiente de mocks
+
+- O app usa o `socket.io-client` de verdade, conectando em
+  `<origem>/socket.io/` só com o transporte `websocket` (sem long-polling).
+- O MSW intercepta o WebSocket no navegador (`ws.link`) e o
+  `@mswjs/socket.io-binding` traduz o protocolo Engine.IO/Socket.IO. O servidor
+  falso fica em `src/mocks/realtime.ts`.
+- **Detalhes que fizeram diferença:**
+  - O MSW remove o `/socket.io/` do caminho antes de comparar, então o
+    `ws.link` aponta para a raiz da origem. Conexões que não são `/socket.io/`
+    (o hot reload do Vite) passam direto para o servidor real.
+  - O `engine.io-client` guarda o `WebSocket` global quando o módulo carrega. Por
+    isso o `socket.io-client` é importado de forma dinâmica, depois que o MSW
+    já trocou o `WebSocket` pelo dele.
+  - O binding faz o handshake, mas não manda o ping do Engine.IO. O mock envia
+    um ping a cada 20 s; sem isso o cliente desconectaria a cada 30 s.
+- **Limitações**: sem long-polling, sem namespaces nem rooms (o binding não
+  implementa); o "broadcast" é um laço sobre as conexões abertas na aba. Cada
+  aba tem seu próprio servidor falso, então um evento disparado numa aba não
+  chega em outra.
+
 ## Rotas
 
 URLs em português, porque são texto que o usuário vê. Código, API e eventos

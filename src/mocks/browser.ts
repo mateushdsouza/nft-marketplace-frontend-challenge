@@ -6,6 +6,7 @@ import { nftHandlers } from './handlers/nfts'
 import { orderHandlers } from './handlers/orders'
 import { walletHandlers } from './handlers/wallets'
 import { settleDueOrders } from './orders'
+import { realtimeHandlers } from './realtime'
 import { applyScenarioFromUrl } from './scenarios'
 
 export const worker = setupWorker(
@@ -15,6 +16,7 @@ export const worker = setupWorker(
   ...nftHandlers,
   ...walletHandlers,
   ...orderHandlers,
+  ...realtimeHandlers,
 )
 
 export async function startMocks() {

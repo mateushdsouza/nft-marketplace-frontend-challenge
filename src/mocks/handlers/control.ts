@@ -3,6 +3,7 @@ import { isValidEth } from '@/shared/lib/money'
 import { db } from '../db'
 import { API, apiError } from '../http'
 import { droppedResponses } from '../orders'
+import { emitNftUpdated } from '../realtime'
 import { isScenarioName, scenario, SCENARIOS } from '../scenarios'
 import { connectedWallets } from './wallets'
 
@@ -66,6 +67,7 @@ export const controlHandlers = [
     }
     nft.version += 1
     db.commit()
+    emitNftUpdated(nft)
     return HttpResponse.json(nft)
   }),
 ]
