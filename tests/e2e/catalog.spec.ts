@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 const cards = (page: Page) =>
-  page.getByRole('main').getByRole('article').getByRole('heading')
+  page.locator('#catalogo').getByRole('article').getByRole('heading')
 
 // No mobile os filtros ficam numa gaveta (Sheet).
 async function openFilters(page: Page) {
@@ -78,7 +78,7 @@ test('busca com debounce e ordenação por preço', async ({ page }) => {
   await page.getByLabel('Ordenar por:').selectOption('price-asc')
   await expect(page).toHaveURL(/sort=price-asc/)
   const prices = page
-    .getByRole('main')
+    .locator('#catalogo')
     .getByRole('article')
     .locator('.text-text-accent')
   await expect(prices).toHaveCount(9)

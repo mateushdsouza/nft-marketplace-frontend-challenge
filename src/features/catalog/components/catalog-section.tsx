@@ -18,6 +18,7 @@ import { StateMessage } from '@/shared/ui/state-message'
 import { nftListQuery } from '../queries'
 import { CATALOG_PAGE_SIZE, type CatalogSearch } from '../search'
 import { FiltersPanel } from './filters-panel'
+import { FeaturedNft } from './home-sections'
 import { NftCard, NftCardSkeleton } from './nft-card'
 import { Pagination } from './pagination'
 import { SearchBox } from './search-box'
@@ -106,9 +107,10 @@ export function CatalogSection() {
       </div>
 
       <div className="mt-8 grid gap-12 lg:grid-cols-[310px_1fr]">
-        <aside aria-label="Filtros" className="hidden lg:block">
-          {filters}
-        </aside>
+        <div className="hidden lg:block">
+          <aside aria-label="Filtros">{filters}</aside>
+          <FeaturedNft />
+        </div>
 
         <div>
           <div className="flex flex-col gap-4 border-b border-border pb-3 sm:flex-row sm:items-center sm:justify-between">

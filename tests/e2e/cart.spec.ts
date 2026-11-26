@@ -129,7 +129,7 @@ test('carrinho de um usuário não aparece para outro', async ({ page }) => {
 
 test('"Comprar" no detalhe leva ao carrinho com o item', async ({ page }) => {
   await page.goto('/nft/nft_006')
-  await page.getByRole('button', { name: 'Comprar' }).click()
+  await page.getByRole('button', { name: 'Comprar', exact: true }).click()
   await expect(page).toHaveURL('/carrinho')
   await expect(
     page.getByRole('link', { name: 'Ivory Baron #088' }),

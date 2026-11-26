@@ -33,6 +33,9 @@ const options = {
 async function waitForImages(page: Page) {
   await page.evaluate(async () => {
     const images = [...document.images]
+    // Imagem lazy que nunca entra na tela não carrega nem dispara evento:
+    // no print da página inteira, todas precisam estar carregadas.
+    for (const img of images) img.loading = 'eager'
     await Promise.all(
       images.map((img) =>
         img.complete
@@ -56,7 +59,7 @@ async function settle(page: Page) {
 
 test('início', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('main').getByRole('article')).toHaveCount(9)
+  await expect(page.locator('#catalogo').getByRole('article')).toHaveCount(9)
   await settle(page)
   await expect(page).toHaveScreenshot('inicio.png', options)
   // Primeira tela, como o usuário vê: cabeçalho e, no mobile, a barra inferior.

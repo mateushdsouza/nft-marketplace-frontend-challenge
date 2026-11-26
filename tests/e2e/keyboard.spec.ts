@@ -27,7 +27,7 @@ test('o primeiro Tab mostra o link para pular ao conteúdo', async ({
 }) => {
   await page.goto('/')
   await expect(
-    page.getByRole('main').getByRole('article').first(),
+    page.locator('#catalogo').getByRole('article').first(),
   ).toBeVisible()
 
   await page.keyboard.press('Tab')

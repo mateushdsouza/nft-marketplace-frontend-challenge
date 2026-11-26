@@ -2,6 +2,10 @@ import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
 import { CatalogSection } from '@/features/catalog/components/catalog-section'
 import { Hero } from '@/features/catalog/components/hero'
 import {
+  MintJournal,
+  Promos,
+} from '@/features/catalog/components/home-sections'
+import {
   catalogSearchDefaults,
   catalogSearchSchema,
 } from '@/features/catalog/search'
@@ -18,6 +22,8 @@ function HomePage() {
     <main>
       <Hero />
       <CatalogSection />
+      <Promos />
+      <MintJournal />
     </main>
   )
 }

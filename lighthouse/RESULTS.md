@@ -14,10 +14,10 @@ com o cenário padrão dos mocks.
 
 | Página | Perfil | Performance | Acessibilidade | Boas práticas | SEO | LCP | CLS | TBT |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
-| Início | mobile | **78** ⚠ | 100 | **82** ⚠ | 100 | 3.82 s | 0.036 | 140 ms |
-| Detalhe do NFT | mobile | **81** ⚠ | 100 | **82** ⚠ | 100 | 3.64 s | 0.000 | 129 ms |
-| Início | desktop | 96 | 100 | **81** ⚠ | 100 | 1.11 s | 0.002 | 0 ms |
-| Detalhe do NFT | desktop | 97 | 100 | **81** ⚠ | 100 | 1.06 s | 0.000 | 0 ms |
+| Início | mobile | **81** ⚠ | 100 | **82** ⚠ | 100 | 3.67 s | 0.036 | 127 ms |
+| Detalhe do NFT | mobile | **80** ⚠ | 100 | **82** ⚠ | 100 | 3.48 s | 0.000 | 191 ms |
+| Início | desktop | 96 | 100 | **81** ⚠ | 100 | 1.09 s | 0.002 | 0 ms |
+| Detalhe do NFT | desktop | 97 | 100 | **81** ⚠ | 100 | 1.03 s | 0.000 | 0 ms |
 
 Metas: Performance ≥ 90, Acessibilidade ≥ 95, Boas práticas ≥ 95, SEO ≥ 90.
 Valores abaixo da meta aparecem com ⚠. Os relatórios completos (HTML e JSON)

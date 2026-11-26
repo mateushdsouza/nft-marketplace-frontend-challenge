@@ -43,7 +43,7 @@ function RootLayout() {
       </div>
       <SiteFooter />
       <MobileNav />
-      <Toaster position="top-center" />
+      <Toaster />
       <SessionWatcher />
       <RealtimeProvider />
       {import.meta.env.DEV && <TanStackRouterDevtools position="bottom-left" />}

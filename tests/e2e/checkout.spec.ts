@@ -39,7 +39,7 @@ test('valida os dados do colecionador antes da revisão', async ({ page }) => {
 test('compra completa: do catálogo ao recibo confirmado', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: /Emerald Ape #042/ }).click()
-  await page.getByRole('button', { name: 'Comprar' }).click()
+  await page.getByRole('button', { name: 'Comprar', exact: true }).click()
   await expect(page).toHaveURL('/carrinho')
 
   await page.getByRole('link', { name: 'Conectar e finalizar' }).click()

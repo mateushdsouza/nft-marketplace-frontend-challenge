@@ -1,45 +1,81 @@
 import { ArrowRight } from 'lucide-react'
-import { Button } from '@/shared/ui/button'
 
+// No mobile o Figma usa um card compacto (título menor, artes sobrepostas à
+// direita, "Explorar" como link de texto); no desktop, texto grande e a arte
+// ao lado. Os textos mudam entre os dois frames, por isso existem duas versões.
 export function Hero() {
   return (
     <section
       aria-labelledby="hero-titulo"
       className="mx-auto mt-6 max-w-content px-6 md:mt-8"
     >
-      <div className="grid items-center gap-6 rounded-art bg-gradient-to-br from-surface to-surface-raised p-5 md:grid-cols-[1fr_minmax(0,380px)] md:gap-10 md:bg-none md:p-0">
-        <div className="md:px-6">
-          <p className="text-xs md:text-sm">Bem-vindo à Kurio</p>
+      <div className="relative grid grid-cols-[1fr_138px] items-center gap-2 overflow-hidden rounded-[30px] bg-gradient-to-br from-primary/20 to-primary/10 p-4 pb-7 md:grid-cols-[1fr_minmax(0,380px)] md:gap-10 md:rounded-none md:bg-none md:p-0">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-8 -left-20 size-62 rounded-full bg-gradient-to-br from-primary-light/40 to-transparent md:hidden"
+        />
+        <div className="relative md:px-6">
+          <p className="text-xs font-medium md:text-sm md:font-normal">
+            Bem-vindo à Kurio
+          </p>
           <h1
             id="hero-titulo"
-            className="mt-3 text-2xl leading-tight font-bold tracking-wide uppercase md:mt-6 md:text-[43px] md:leading-[1.6]"
+            className="mt-1.5 text-lg leading-[29px] font-bold tracking-wide uppercase md:mt-6 md:text-[43px] md:leading-[1.6]"
           >
-            Seja dono do futuro <br className="hidden md:block" />
-            da arte digital
+            <span className="md:hidden">
+              Seja dono da
+              <br />
+              cultura digital
+            </span>
+            <span className="hidden md:inline">
+              Seja dono do futuro
+              <br />
+              da arte digital
+            </span>
           </h1>
-          <p className="mt-3 max-w-md text-xs leading-5 text-text-secondary md:mt-4 md:text-sm md:leading-6">
-            Descubra NFTs selecionados de criadores emergentes e consagrados.
-            Colecione arte digital rara, apoie artistas e tenha uma parte da
-            cultura da internet.
+          <p className="mt-1.5 text-xs leading-[18px] text-text-secondary md:mt-4 md:max-w-md md:text-sm md:leading-6">
+            <span className="md:hidden">
+              Descubra NFTs selecionados de criadores do mundo todo.
+            </span>
+            <span className="hidden md:inline">
+              Descubra NFTs selecionados de criadores emergentes e consagrados.
+              Colecione arte digital rara, apoie artistas e tenha uma parte da
+              cultura da internet.
+            </span>
           </p>
-          <Button
-            asChild
-            className="mt-5 h-9 rounded-button px-6 text-xs font-bold uppercase md:mt-8"
+          <a
+            href="#catalogo"
+            className="mt-1 inline-flex items-center gap-2 text-xs font-bold text-text-accent uppercase hover:underline md:mt-8 md:h-9 md:rounded-button md:bg-primary md:px-6 md:text-ink md:hover:bg-primary-dark md:hover:no-underline"
           >
-            <a href="#catalogo">
-              Explorar
-              <ArrowRight aria-hidden className="md:hidden" />
-            </a>
-          </Button>
+            Explorar
+            <ArrowRight aria-hidden className="size-4 md:hidden" />
+          </a>
         </div>
-        <img
-          src="/nfts/nft-01.webp"
-          alt="Emerald Ape, macaco de óculos escuros e jaqueta verde"
-          width={380}
-          height={380}
-          fetchPriority="high"
-          className="hidden aspect-square w-full rounded-art object-cover md:block"
-        />
+        <div className="relative pb-2 md:pb-0">
+          <img
+            src="/nfts/nft-01.webp"
+            alt="Emerald Ape, macaco de óculos escuros e jaqueta verde"
+            width={380}
+            height={380}
+            fetchPriority="high"
+            className="aspect-square w-full rounded-2xl object-cover md:rounded-art"
+          />
+          <img
+            src="/nfts/nft-02.webp"
+            alt=""
+            width={58}
+            height={58}
+            className="absolute -bottom-0 left-3.5 size-[58px] rounded-2xl border-2 border-surface object-cover md:hidden"
+          />
+        </div>
+        <div
+          aria-hidden
+          className="absolute bottom-2.5 left-1/2 flex -translate-x-1/2 gap-1.5 md:bottom-0 md:left-[40%]"
+        >
+          {[0, 1, 2].map((dot) => (
+            <span key={dot} className="size-[7px] rounded-full bg-primary" />
+          ))}
+        </div>
       </div>
     </section>
   )

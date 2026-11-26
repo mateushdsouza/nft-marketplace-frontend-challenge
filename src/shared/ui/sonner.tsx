@@ -5,12 +5,34 @@ import {
   OctagonXIcon,
   TriangleAlertIcon,
 } from 'lucide-react'
+import { useSyncExternalStore } from 'react'
 import { Toaster as Sonner, type ToasterProps } from 'sonner'
 
+// No mobile os avisos ficam embaixo, acima da barra de navegação: no topo
+// eles cobriam os botões do cabeçalho (Sair, carrinho) por vários segundos.
+const MOBILE = '(max-width: 767px)'
+
+function subscribe(callback: () => void) {
+  const query = window.matchMedia(MOBILE)
+  query.addEventListener('change', callback)
+  return () => query.removeEventListener('change', callback)
+}
+
+function useIsMobile() {
+  return useSyncExternalStore(
+    subscribe,
+    () => window.matchMedia(MOBILE).matches,
+    () => false,
+  )
+}
+
 const Toaster = ({ ...props }: ToasterProps) => {
+  const isMobile = useIsMobile()
   return (
     <Sonner
       theme="dark"
+      position={isMobile ? 'bottom-center' : 'top-center'}
+      mobileOffset={{ bottom: 80 }}
       className="toaster group"
       icons={{
         success: <CircleCheckIcon className="size-4" />,

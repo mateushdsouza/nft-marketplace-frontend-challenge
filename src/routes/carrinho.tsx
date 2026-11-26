@@ -5,6 +5,7 @@ import {
   cartGridClass,
 } from '@/features/cart/components/cart-item-row'
 import { CartSummary } from '@/features/cart/components/cart-summary'
+import { NftShelf } from '@/features/catalog/components/nft-shelf'
 import { useCart } from '@/features/cart/queries'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/button'
@@ -99,6 +100,13 @@ function CartPage() {
           )}
         </div>
       )}
+
+      <NftShelf
+        id="tambem-viram"
+        title="Colecionadores também viram"
+        params={{ tab: 'trending' }}
+        excludeIds={cart.data?.items.map((item) => item.nftId) ?? []}
+      />
     </main>
   )
 }
