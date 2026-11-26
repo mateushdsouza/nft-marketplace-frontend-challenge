@@ -399,6 +399,26 @@ ficam em inglês.
 `vercel.json` reescreve todas as rotas para `index.html`, então o acesso direto e
 o refresh funcionam no deploy.
 
+## Testes E2E (Playwright)
+
+- Chromium em dois projetos: `desktop` (1440×900) e `mobile` (Pixel 7,
+  390×844). Cada teste começa com `POST /api/__reset` e o cenário `fast`.
+- Relatório HTML em `playwright-report/`; trace e screenshot só das falhas.
+- **Teclado e foco** (`keyboard.spec.ts`): link "Pular para o conteúdo", fluxo
+  catálogo → detalhe → carrinho só com teclado, foco preso e devolvido na
+  gaveta de filtros, foco no primeiro campo inválido. O teste confere que o
+  foco tem um indicador **desenhado** (contorno ou sombra), não só o estado
+  `:focus-visible`.
+- **Regressão visual** (`visual.spec.ts`): início, detalhe, carrinho e
+  pagamento, nos dois projetos, em página inteira, com dados fixos e animações
+  paradas. `tests/support/screenshot.css` esconde o que muda com o tempo
+  (toasts, devtools do router). Nos prints de página inteira a barra inferior
+  do mobile (fixa) fica escondida, senão apareceria no meio cobrindo o
+  conteúdo; ela é conferida no print da primeira tela (`inicio-tela.png`).
+- As baselines foram geradas no **Windows** (sufixo `-win32`). A renderização
+  de fontes muda entre sistemas, então em Linux/macOS é preciso gerar as
+  próprias: `npx playwright test visual --update-snapshots`.
+
 ## Decisões e desvios
 
 - **MSW 2 em vez de 3**: o `@mswjs/socket.io-binding` exige `msw ^2.10`.

@@ -1,0 +1,6 @@
+/* Só nos prints de página inteira: a barra inferior do mobile é fixa e,
+   num print da página toda, apareceria no meio cobrindo o conteúdo.
+   Ela é conferida no print da primeira tela (inicio-tela.png). */
+nav[aria-label='Navegação inferior'] {
+  display: none !important;
+}

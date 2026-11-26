@@ -1,0 +1,11 @@
+/* Aplicado só nos prints da regressão visual. */
+
+/* Devtools do TanStack Router: existe só em dev e não faz parte da tela. */
+.TanStackRouterDevtools {
+  display: none !important;
+}
+
+/* Toasts dependem do tempo; os prints mostram a tela, não o aviso. */
+[data-sonner-toaster] {
+  display: none !important;
+}
