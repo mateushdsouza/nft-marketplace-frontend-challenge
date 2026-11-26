@@ -32,7 +32,13 @@ function RootLayout() {
         Pular para o conteúdo
       </a>
       <SiteHeader />
-      <div id="conteudo" tabIndex={-1} className="outline-none">
+      {/* Altura mínima da tela: enquanto a rota carrega, o rodapé não aparece
+          logo abaixo do cabeçalho para depois ser empurrado (layout shift). */}
+      <div
+        id="conteudo"
+        tabIndex={-1}
+        className="min-h-[calc(100svh-4rem)] outline-none"
+      >
         <Outlet />
       </div>
       <SiteFooter />
