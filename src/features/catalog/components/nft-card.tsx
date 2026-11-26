@@ -3,7 +3,15 @@ import type { Nft } from '@/shared/api/types'
 import { formatEth } from '@/shared/lib/money'
 import { Skeleton } from '@/shared/ui/skeleton'
 
-export function NftCard({ nft }: { nft: Nft }) {
+// priority: card da primeira linha, visível sem rolar. A imagem dele costuma
+// ser o LCP, então carrega na hora e com prioridade alta (sem lazy).
+export function NftCard({
+  nft,
+  priority = false,
+}: {
+  nft: Nft
+  priority?: boolean
+}) {
   return (
     <article>
       <Link
@@ -17,7 +25,8 @@ export function NftCard({ nft }: { nft: Nft }) {
             alt={`Arte do NFT ${nft.name}`}
             width={250}
             height={250}
-            loading="lazy"
+            loading={priority ? 'eager' : 'lazy'}
+            fetchPriority={priority ? 'high' : 'auto'}
             decoding="async"
             className="aspect-square w-full rounded-art object-cover transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transition-none"
           />

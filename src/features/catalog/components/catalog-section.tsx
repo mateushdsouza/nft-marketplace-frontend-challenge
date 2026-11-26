@@ -227,9 +227,9 @@ export function CatalogSection() {
                     refreshing && 'opacity-60',
                   )}
                 >
-                  {data.items.map((nft) => (
+                  {data.items.map((nft, index) => (
                     <li key={nft.id}>
-                      <NftCard nft={nft} />
+                      <NftCard nft={nft} priority={index < 3} />
                     </li>
                   ))}
                 </ul>

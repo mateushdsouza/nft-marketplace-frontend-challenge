@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { backendReady } from './backend-ready'
 import { ApiError, toApiError } from './errors'
 import { guestCart } from './guest-cart'
 import { sessionToken } from './session-token'
@@ -8,6 +9,13 @@ export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? '/api',
   timeout: 15_000,
   headers: { 'Content-Type': 'application/json' },
+})
+
+// Nenhuma requisição sai antes de o backend (o mock, no ambiente de demo)
+// estar pronto para responder.
+api.interceptors.request.use(async (config) => {
+  await backendReady
+  return config
 })
 
 // Envia o token em toda requisição (≈ HttpInterceptor do Angular).
