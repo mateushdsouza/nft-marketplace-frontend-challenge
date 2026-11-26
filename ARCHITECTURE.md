@@ -293,6 +293,55 @@ na próxima consulta, inclusive depois de um refresh.
   implementa); o "broadcast" é um laço sobre as conexões abertas na aba. Cada
   aba tem seu próprio servidor falso, então um evento disparado numa aba não
   chega em outra.
+- Sem acesso ao `auth` do handshake pelo binding, o cliente se identifica
+  depois de conectar, com o evento `session.join` (token da sessão). O servidor
+  falso guarda o dono de cada conexão e manda `order.updated` só para ele.
+- Quando o mock fecha uma conexão que ainda está abrindo, o cliente não recebe
+  erro, só o fechamento. Por isso o cliente usa `timeout: 4000`: a tentativa
+  sem resposta conta como falha e ele tenta de novo.
+
+### Eventos
+
+| Evento          | Quem recebe         | `data`                                     | Quando                                                            |
+| --------------- | ------------------- | ------------------------------------------ | ----------------------------------------------------------------- |
+| `nft.updated`   | todas as conexões   | `priceEth`, `previousPriceEth`, `editions` | preço ou estoque mudou (controle `__nfts/:id`, pedido confirmado) |
+| `order.updated` | só o dono do pedido | o pedido inteiro (`Order`)                 | pedido saiu de pendente                                           |
+
+Todo evento tem `eventId`, `resource { type, id }` e `version` (a mesma
+`version` do recurso no REST).
+
+### Reconciliação REST × Socket.IO
+
+- **Duplicados e antigos**: um porteiro (`createEventGate`) recusa `eventId` já
+  visto e `version` menor ou igual à última aplicada do recurso. Além disso, cada
+  atualização do cache compara com a `version` que está lá, porque o REST pode
+  já ter trazido um dado mais novo que o evento.
+- **nft.updated**: atualiza o detalhe e todas as listas em cache com
+  `setQueryData`/`setQueriesData`, sem nova requisição. Se o NFT está no
+  carrinho, mostra um aviso (toast com `aria-live`) e busca o carrinho de novo;
+  a cotação é refeita porque preço e versão fazem parte da chave dela.
+- **order.updated**: troca o pedido do cache e, se confirmado, marca o
+  carrinho como velho. Enquanto o carrinho é buscado de novo, eventos de NFT
+  não geram aviso (evita avisar "esgotou" do item que a pessoa acabou de comprar).
+- **Reconexão**: na volta da conexão, `invalidateQueries()` busca de novo tudo
+  que está na tela. É assim que um pedido que terminou com o socket fora do ar
+  aparece certo. A página do pedido ainda consulta a cada 15 s enquanto ele
+  está pendente, como reserva caso o socket não volte.
+- **Sessão**: um socket por sessão. Login, logout ou troca de usuário
+  desconectam o socket antigo (com `off` dos listeners) e abrem outro, com um
+  porteiro novo.
+- **Checkout**: se, durante a revisão, chega uma cotação mais nova que cobra
+  diferente da revisada, "Confirmar compra" fica bloqueado até a pessoa aceitar
+  o novo valor. Com o socket fora do ar, quem barra é a revalidação da API (409
+  `QUOTE_CHANGED`).
+
+### Controles para testes
+
+| Endpoint                                                         | Efeito                                                             |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `POST /api/__nfts/:id` `{ priceEth?, editionId?, available? }`   | muda o NFT e emite `nft.updated`                                   |
+| `POST /api/__realtime/replay` `{ mode: 'duplicate' \| 'stale' }` | reenvia o último evento igual, ou o penúltimo com id novo          |
+| `POST /api/__realtime/connection` `{ offline }`                  | derruba o servidor Socket.IO e recusa conexões, ou volta ao normal |
 
 ## Rotas
 

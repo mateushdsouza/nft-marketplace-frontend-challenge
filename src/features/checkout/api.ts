@@ -27,8 +27,9 @@ export function orderQuery(userId: string, orderId: string) {
   return queryOptions({
     queryKey: [...userKeys.all(userId), 'order', orderId],
     queryFn: ({ signal }) => fetchOrder(orderId, signal),
-    // Enquanto pendente, consulta de novo a cada 1 s.
+    // O resultado chega pelo socket (order.updated). Enquanto pendente,
+    // uma consulta a cada 15 s cobre o caso de o socket estar fora do ar.
     refetchInterval: (query) =>
-      query.state.data?.status === 'pending' ? 1000 : false,
+      query.state.data?.status === 'pending' ? 15_000 : false,
   })
 }

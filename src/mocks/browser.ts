@@ -5,7 +5,7 @@ import { controlHandlers } from './handlers/control'
 import { nftHandlers } from './handlers/nfts'
 import { orderHandlers } from './handlers/orders'
 import { walletHandlers } from './handlers/wallets'
-import { settleDueOrders } from './orders'
+import { resumePendingOrders } from './orders'
 import { realtimeHandlers } from './realtime'
 import { applyScenarioFromUrl } from './scenarios'
 
@@ -21,8 +21,8 @@ export const worker = setupWorker(
 
 export async function startMocks() {
   applyScenarioFromUrl()
-  // Pedidos que venceram enquanto a página estava fechada.
-  settleDueOrders()
+  // Pedidos que estavam processando quando a página foi fechada.
+  resumePendingOrders()
   await worker.start({
     onUnhandledRequest: 'bypass',
     quiet: import.meta.env.PROD,

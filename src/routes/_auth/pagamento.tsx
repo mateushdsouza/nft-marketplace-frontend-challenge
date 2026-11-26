@@ -1,12 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { fetchQuote } from '@/features/cart/api'
-import { stockIssues, useCart, useCartQuote } from '@/features/cart/queries'
+import {
+  currentCartKey,
+  stockIssues,
+  useCart,
+  useCartQuote,
+} from '@/features/cart/queries'
 import { createOrder } from '@/features/checkout/api'
 import { getAttemptKey } from '@/features/checkout/attempt'
+import { sameCharges } from '@/features/checkout/quote'
 import { QuoteSummary } from '@/features/checkout/components/quote-summary'
 import {
   WalletPanel,
@@ -130,6 +136,7 @@ function CheckoutForm({
   wallets: Wallet[]
 }) {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const primary = wallets.find((w) => w.slot === 'primary') ?? wallets[0]
 
   const form = useForm<CheckoutValues>({
@@ -240,8 +247,8 @@ function CheckoutForm({
   })
 
   function confirmPurchase() {
-    // Trava contra clique duplo: só um envio por vez.
-    if (!review || placeOrder.isPending) return
+    // Trava contra clique duplo e contra cotação desatualizada.
+    if (!review || confirmBlocked) return
     setNotice(null)
     placeOrder.mutate(review, {
       onSuccess: (order) =>
@@ -259,6 +266,10 @@ function CheckoutForm({
               text: `${error.message} Total anterior: ${formatEth(review.quote.totalEth)}. Novo total: ${formatEth(next.totalEth)}.`,
             })
             setReview({ ...review, quote: next })
+            // O carrinho do cache também está velho: busca de novo.
+            queryClient.invalidateQueries({
+              queryKey: currentCartKey(queryClient),
+            })
             return
           }
         }
@@ -285,7 +296,22 @@ function CheckoutForm({
     })
   }
 
-  const displayedQuote = review?.quote ?? liveQuote.data
+  // Durante a revisão, o socket pode avisar que um NFT mudou. O carrinho é
+  // buscado de novo e a cotação ao vivo é refeita. Se ela cobrar diferente
+  // da revisada, a confirmação fica bloqueada até o comprador aceitar.
+  // Só uma cotação MAIS NOVA que a revisada pode dizer que algo mudou.
+  const freshQuote = liveQuote.isPlaceholderData ? undefined : liveQuote.data
+  const outdated =
+    !!review &&
+    !!freshQuote &&
+    Date.parse(freshQuote.createdAt) > Date.parse(review.quote.createdAt) &&
+    !sameCharges(review.quote, freshQuote)
+  const checkingQuote = !!review && liveQuote.isPlaceholderData
+  const confirmBlocked = placeOrder.isPending || outdated || checkingQuote
+
+  const displayedQuote = outdated
+    ? freshQuote
+    : (review?.quote ?? liveQuote.data)
 
   return (
     <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_405px] lg:gap-12">
@@ -414,11 +440,31 @@ function CheckoutForm({
                 </dd>
               </div>
             </dl>
+            {outdated && freshQuote && (
+              <div
+                role="alert"
+                className="space-y-3 rounded-input border border-error/60 bg-error/10 px-3 py-2 text-sm"
+              >
+                <p>
+                  Os valores mudaram enquanto você revisava. Total anterior:{' '}
+                  {formatEth(review.quote.totalEth)}. Novo total:{' '}
+                  {formatEth(freshQuote.totalEth)}.
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full rounded-button"
+                  onClick={() => setReview({ ...review, quote: freshQuote })}
+                >
+                  Revisar com o novo valor
+                </Button>
+              </div>
+            )}
             <Button
               type="button"
               onClick={confirmPurchase}
-              disabled={placeOrder.isPending}
-              aria-disabled={placeOrder.isPending || undefined}
+              disabled={confirmBlocked}
+              aria-disabled={confirmBlocked || undefined}
               className="h-11 w-full rounded-button font-bold"
             >
               {placeOrder.isPending ? 'Enviando pedido…' : 'Confirmar compra'}

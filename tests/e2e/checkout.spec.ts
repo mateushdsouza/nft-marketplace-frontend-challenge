@@ -1,47 +1,17 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { ALICE, BOB, loginAs } from '../support/auth'
 import { callApi, resetMocks, setScenario } from '../support/mocks'
+import {
+  addToCart,
+  confirmButton,
+  connectWallet,
+  goToReview,
+  ordersOf,
+} from '../support/shop'
 
 test.beforeEach(async ({ page }) => {
   await resetMocks(page)
 })
-
-async function addToCart(page: Page, nftId = 'nft_001', edition = '1/50') {
-  await page.goto(`/nft/${nftId}`)
-  await page.getByText(edition, { exact: true }).click()
-  await page.getByRole('button', { name: 'Adicionar ao carrinho' }).click()
-  await expect(page.getByText(/adicionado ao carrinho/)).toBeVisible()
-}
-
-async function connectWallet(page: Page) {
-  await page.getByRole('button', { name: 'Conectar carteira' }).click()
-  await expect(page.getByText('Carteira conectada')).toBeVisible()
-}
-
-async function goToReview(page: Page) {
-  await page.goto('/pagamento')
-  await connectWallet(page)
-  await page.getByRole('button', { name: 'Revisar pedido' }).click()
-  await expect(page.getByText('Revise antes de confirmar')).toBeVisible()
-}
-
-const confirmButton = (page: Page) =>
-  page.getByRole('button', { name: 'Confirmar compra' })
-
-async function ordersOf(page: Page) {
-  const { body } = await callApi<{ id: string; status: string }[]>(
-    page,
-    '/api/orders',
-    {
-      headers: {
-        Authorization: `Bearer ${await page.evaluate(() =>
-          localStorage.getItem('kurio:session-token'),
-        )}`,
-      },
-    },
-  )
-  return body
-}
 
 test('valida os dados do colecionador antes da revisão', async ({ page }) => {
   await loginAs(page, ALICE)
@@ -162,6 +132,8 @@ test('pedido pendente é recuperado depois de recarregar a página', async ({
   expect(await ordersOf(page)).toHaveLength(1)
 })
 
+// Com o socket no ar, a tela bloqueia antes (ver realtime.spec.ts). Aqui o
+// socket cai, a tela não fica sabendo, e quem barra é a revalidação da API.
 test('preço alterado depois da revisão exige nova confirmação', async ({
   page,
 }) => {
@@ -169,6 +141,10 @@ test('preço alterado depois da revisão exige nova confirmação', async ({
   await addToCart(page)
   await goToReview(page)
 
+  await callApi(page, '/api/__realtime/connection', {
+    method: 'POST',
+    body: { offline: true },
+  })
   await callApi(page, '/api/__nfts/nft_001', {
     method: 'POST',
     body: { priceEth: '1.50' },

@@ -3,7 +3,7 @@ import { isValidEth } from '@/shared/lib/money'
 import { db } from '../db'
 import { API, apiError } from '../http'
 import { droppedResponses } from '../orders'
-import { emitNftUpdated } from '../realtime'
+import { emitNftUpdated, realtimeControl } from '../realtime'
 import { isScenarioName, scenario, SCENARIOS } from '../scenarios'
 import { connectedWallets } from './wallets'
 
@@ -31,6 +31,7 @@ export const controlHandlers = [
     db.reset()
     connectedWallets.clear()
     droppedResponses.clear()
+    realtimeControl.reset()
     scenario.set('default')
     return HttpResponse.json({ ok: true })
   }),
@@ -56,6 +57,7 @@ export const controlHandlers = [
       available?: unknown
     }
     if (typeof body.priceEth === 'string' && isValidEth(body.priceEth)) {
+      nft.previousPriceEth = nft.priceEth
       nft.priceEth = body.priceEth
     }
     if (
@@ -69,5 +71,26 @@ export const controlHandlers = [
     db.commit()
     emitNftUpdated(nft)
     return HttpResponse.json(nft)
+  }),
+
+  // Repete eventos já enviados pelo socket: "duplicate" reenvia o último
+  // igual; "stale" reenvia o penúltimo com id novo (versão antiga).
+  http.post(`${API}/__realtime/replay`, async ({ request }) => {
+    const body = (await request.json().catch(() => ({}))) as { mode?: unknown }
+    const sent =
+      body.mode === 'stale'
+        ? realtimeControl.replayStale()
+        : realtimeControl.replayLast()
+    if (!sent) return apiError(409, 'CONFLICT', 'Nenhum evento para repetir.')
+    return HttpResponse.json({ ok: true })
+  }),
+
+  // Derruba o servidor Socket.IO (offline: true) ou o traz de volta.
+  http.post(`${API}/__realtime/connection`, async ({ request }) => {
+    const body = (await request.json().catch(() => ({}))) as {
+      offline?: unknown
+    }
+    realtimeControl.setOffline(body.offline === true)
+    return HttpResponse.json({ offline: body.offline === true })
   }),
 ]

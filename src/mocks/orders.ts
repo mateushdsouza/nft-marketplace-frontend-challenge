@@ -108,7 +108,13 @@ export function scheduleSettlement(order: OrderRecord) {
   setTimeout(() => settleIfDue(order), order.settleAt - Date.now() + 50)
 }
 
-// Liquida todos os pedidos vencidos (usado ao iniciar o mock após refresh).
-export function settleDueOrders() {
-  db.state.orders.forEach(settleIfDue)
+// Ao iniciar o mock (por exemplo, depois de um refresh): os timers da página
+// anterior se perderam. Liquida os pedidos vencidos e agenda os que ainda
+// estão processando.
+export function resumePendingOrders() {
+  for (const order of db.state.orders) {
+    if (order.status !== 'pending') continue
+    if (Date.now() >= order.settleAt) settleIfDue(order)
+    else scheduleSettlement(order)
+  }
 }
