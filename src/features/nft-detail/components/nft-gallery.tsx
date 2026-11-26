@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { cn } from '@/shared/lib/utils'
+import { artSrcSet } from '@/shared/lib/images'
 
 // O Figma tem uma arte por NFT. As miniaturas mostram recortes
 // (arte inteira, rosto, acessórios, roupa) da mesma imagem.
@@ -38,6 +39,8 @@ export function NftGallery({ image, name }: { image: string; name: string }) {
           >
             <img
               src={image}
+              srcSet={artSrcSet(image)}
+              sizes="100px"
               alt=""
               width={100}
               height={100}
@@ -50,6 +53,8 @@ export function NftGallery({ image, name }: { image: string; name: string }) {
         <div className="overflow-hidden rounded-[24px]">
           <img
             src={image}
+            srcSet={artSrcSet(image)}
+            sizes="(max-width: 1023px) 90vw, 444px"
             alt={`${name} — ${view.label.toLowerCase()}`}
             width={444}
             height={444}

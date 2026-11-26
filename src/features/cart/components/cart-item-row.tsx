@@ -12,6 +12,7 @@ import {
   useRemoveCartItem,
   useUpdateCartItem,
 } from '../mutations'
+import { artSrcSet } from '@/shared/lib/images'
 
 export const cartGridClass =
   'md:grid md:grid-cols-[minmax(0,1fr)_110px_130px_120px_40px] md:items-center md:gap-4'
@@ -43,6 +44,8 @@ export function CartItemRow({ item }: { item: CartItem }) {
       <div className="row-span-3 flex items-center gap-4 md:row-span-1">
         <img
           src={item.nft.image}
+          srcSet={artSrcSet(item.nft.image)}
+          sizes="80px"
           alt=""
           width={70}
           height={70}

@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import type { Nft } from '@/shared/api/types'
 import { formatEth } from '@/shared/lib/money'
 import { Skeleton } from '@/shared/ui/skeleton'
+import { artSrcSet } from '@/shared/lib/images'
 
 // priority: card da primeira linha, visível sem rolar. A imagem dele costuma
 // ser o LCP, então carrega na hora e com prioridade alta (sem lazy).
@@ -22,6 +23,8 @@ export function NftCard({
         <div className="flex aspect-[258/300] items-center justify-center rounded-card bg-surface p-1">
           <img
             src={nft.image}
+            srcSet={artSrcSet(nft.image)}
+            sizes="(max-width: 767px) 45vw, 250px"
             alt={`Arte do NFT ${nft.name}`}
             width={250}
             height={250}

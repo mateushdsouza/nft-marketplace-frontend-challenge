@@ -1,6 +1,7 @@
 import type { Quote } from '@/shared/api/types'
 import { EDITION_LABEL, NETWORK_LABEL } from '@/shared/lib/labels'
 import { formatEth } from '@/shared/lib/money'
+import { artSrcSet } from '@/shared/lib/images'
 
 // Itens e valores de uma cotação, exatamente como vieram da API.
 export function QuoteSummary({ quote }: { quote: Quote }) {
@@ -18,6 +19,8 @@ export function QuoteSummary({ quote }: { quote: Quote }) {
           >
             <img
               src={line.image}
+              srcSet={artSrcSet(line.image)}
+              sizes="64px"
               alt=""
               width={56}
               height={56}

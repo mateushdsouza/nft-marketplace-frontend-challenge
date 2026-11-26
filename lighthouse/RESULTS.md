@@ -14,9 +14,9 @@ com o cenário padrão dos mocks.
 
 | Página | Perfil | Performance | Acessibilidade | Boas práticas | SEO | LCP | CLS | TBT |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
-| Início | mobile | **81** ⚠ | 100 | **82** ⚠ | 100 | 3.67 s | 0.036 | 127 ms |
-| Detalhe do NFT | mobile | **80** ⚠ | 100 | **82** ⚠ | 100 | 3.48 s | 0.000 | 191 ms |
-| Início | desktop | 96 | 100 | **81** ⚠ | 100 | 1.09 s | 0.002 | 0 ms |
+| Início | mobile | **79** ⚠ | 100 | **82** ⚠ | 100 | 3.84 s | 0.016 | 151 ms |
+| Detalhe do NFT | mobile | **83** ⚠ | 100 | **82** ⚠ | 100 | 3.51 s | 0.000 | 148 ms |
+| Início | desktop | 93 | 100 | **81** ⚠ | 100 | 1.31 s | 0.002 | 0 ms |
 | Detalhe do NFT | desktop | 97 | 100 | **81** ⚠ | 100 | 1.03 s | 0.000 | 0 ms |
 
 Metas: Performance ≥ 90, Acessibilidade ≥ 95, Boas práticas ≥ 95, SEO ≥ 90.

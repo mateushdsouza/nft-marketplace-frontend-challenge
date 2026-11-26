@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
 import { comingSoon } from '@/shared/lib/coming-soon'
+import { artSrcSet } from '@/shared/lib/images'
 
 // Blocos fixos da home desenhados no Figma: NFT em destaque (abaixo dos
 // filtros), as duas promoções e o "Diário da Cunhagem". Os botões levam a
@@ -18,6 +19,8 @@ export function FeaturedNft() {
       <p className="mt-4 text-[22px] leading-4 font-bold">OFERTA LIMITADA</p>
       <img
         src="/nfts/nft-02.webp"
+        srcSet={artSrcSet('/nfts/nft-02.webp')}
+        sizes="310px"
         alt="Sage Nomad #009, gorila de chapéu verde e moletom roxo"
         width={310}
         height={368}
@@ -59,6 +62,8 @@ export function Promos() {
         >
           <img
             src={promo.image}
+            srcSet={artSrcSet(promo.image)}
+            sizes="(max-width: 767px) 45vw, 292px"
             alt={promo.alt}
             width={292}
             height={250}
@@ -143,6 +148,8 @@ export function MintJournal() {
             <article className="flex h-full flex-col overflow-hidden rounded-card bg-surface">
               <img
                 src={post.image}
+                srcSet={artSrcSet(post.image)}
+                sizes="(max-width: 639px) 90vw, 268px"
                 alt=""
                 width={268}
                 height={195}

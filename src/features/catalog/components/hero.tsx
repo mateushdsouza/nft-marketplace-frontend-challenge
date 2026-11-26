@@ -1,4 +1,5 @@
 import { ArrowRight } from 'lucide-react'
+import { artSrcSet } from '@/shared/lib/images'
 
 // No mobile o Figma usa um card compacto (título menor, artes sobrepostas à
 // direita, "Explorar" como link de texto); no desktop, texto grande e a arte
@@ -54,6 +55,8 @@ export function Hero() {
         <div className="relative pb-2 md:pb-0">
           <img
             src="/nfts/nft-01.webp"
+            srcSet={artSrcSet('/nfts/nft-01.webp')}
+            sizes="(max-width: 767px) 138px, 380px"
             alt="Emerald Ape, macaco de óculos escuros e jaqueta verde"
             width={380}
             height={380}
@@ -62,6 +65,8 @@ export function Hero() {
           />
           <img
             src="/nfts/nft-02.webp"
+            srcSet={artSrcSet('/nfts/nft-02.webp')}
+            sizes="58px"
             alt=""
             width={58}
             height={58}
