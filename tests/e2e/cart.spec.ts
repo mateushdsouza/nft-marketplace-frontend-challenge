@@ -135,3 +135,22 @@ test('"Comprar" no detalhe leva ao carrinho com o item', async ({ page }) => {
     page.getByRole('link', { name: 'Ivory Baron #088' }),
   ).toBeVisible()
 })
+
+test('esvaziar o carrinho remove o cupom aplicado', async ({ page }) => {
+  await addFromDetail(page, 'nft_001', '1/50')
+  await page.goto('/carrinho')
+  await page.getByLabel('Código promocional').fill('KURIO10')
+  await page.getByRole('button', { name: 'Aplicar' }).click()
+  await expect(summary(page)).toContainText('Desconto (KURIO10 · 10%)')
+
+  await page
+    .getByRole('button', { name: 'Remover Emerald Ape #042 do carrinho' })
+    .click()
+  await expect(page.getByText('Seu carrinho está vazio')).toBeVisible()
+
+  await addFromDetail(page, 'nft_001', '1/50')
+  await page.goto('/carrinho')
+  await expect(page.getByLabel('Código promocional')).toBeVisible()
+  await expect(summary(page)).toContainText('Desconto do lançamento')
+  await expect(summary(page)).toContainText('1.206 ETH')
+})

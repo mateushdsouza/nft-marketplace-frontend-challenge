@@ -179,7 +179,9 @@ padrão em vez de quebrar a página. Valores padrão são removidos da URL
   tempo real), o item mostra um aviso e o checkout fica bloqueado até ajustar.
 - **Cupom**: fica salvo no carrinho (`PUT/DELETE /api/cart/coupon`). Código
   inexistente ou expirado devolve 422 com erro no campo. Se um cupom aplicado
-  expirar depois, a cotação falha e o resumo pede para removê-lo.
+  expirar depois, a cotação falha e o resumo pede para removê-lo. O cupom vale
+  para o carrinho, não para um item: continua aplicado enquanto houver itens e
+  é removido quando o carrinho fica vazio.
 - **Cotação** (`POST /api/quote`): subtotal, desconto, taxa de rede e total são
   calculados na API com `decimal.js`. A query da cotação usa na chave os itens,
   quantidades, preço e versão de cada NFT, o cupom e a rede. Qualquer mudança

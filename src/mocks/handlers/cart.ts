@@ -128,6 +128,8 @@ export const cartHandlers = [
       if (!owner.ownerId) return missingOwner()
       const record = getCartRecord(owner.ownerId)
       record.items = record.items.filter((i) => i.id !== params.itemId)
+      // Carrinho vazio começa do zero: o cupom não fica guardado.
+      if (record.items.length === 0) record.couponCode = null
       touch(record)
       return HttpResponse.json(toCart(owner.ownerId))
     }),
