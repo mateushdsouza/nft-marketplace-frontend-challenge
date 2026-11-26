@@ -81,6 +81,7 @@ export function ProfileForm({ user }: { user: User }) {
           <TextField
             id="perfil-usuario"
             label="Nome de usuário"
+            spellCheck={false}
             autoComplete="username"
             error={errors.username?.message}
             {...register('username')}

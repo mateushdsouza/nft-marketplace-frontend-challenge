@@ -57,6 +57,7 @@ function RegisterPage() {
         <TextField
           id="cadastro-usuario"
           label="Nome de usuário"
+          spellCheck={false}
           autoComplete="username"
           placeholder="seu_nome"
           error={errors.username?.message}

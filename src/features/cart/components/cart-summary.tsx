@@ -204,6 +204,7 @@ function CouponForm({ appliedCode }: { appliedCode: string | null }) {
           onChange={(e) => setCode(e.target.value)}
           placeholder="Digite o código promocional…"
           autoComplete="off"
+          spellCheck={false}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? 'cupom-erro' : undefined}
           className="h-10 min-w-0 flex-1 rounded-l-input border border-r-0 border-primary/60 bg-transparent px-3 text-sm uppercase placeholder:normal-case placeholder:text-secondary focus-visible:border-primary focus-visible:outline-none aria-invalid:border-error"

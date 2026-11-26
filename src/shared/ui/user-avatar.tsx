@@ -17,6 +17,8 @@ export function UserAvatar({
       <img
         src={src}
         alt={alt}
+        width={80}
+        height={80}
         className={cn('size-8 rounded-full object-cover', className)}
       />
     )

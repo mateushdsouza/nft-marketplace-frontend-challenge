@@ -1,5 +1,5 @@
 import { Search } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 
 const DEBOUNCE_MS = 350
 
@@ -20,12 +20,17 @@ export function SearchBox({
     setText(urlValue)
   }
 
+  // useEffectEvent: o timer chama sempre o onCommit mais recente sem que ele
+  // seja dependência. Assim, se o pai criar uma função nova a cada render, o
+  // debounce não recomeça do zero.
+  const commit = useEffectEvent((value: string) => onCommit(value))
+
   useEffect(() => {
     const next = text.trim()
     if (next === urlValue) return
-    const timer = setTimeout(() => onCommit(next), DEBOUNCE_MS)
+    const timer = setTimeout(() => commit(next), DEBOUNCE_MS)
     return () => clearTimeout(timer)
-  }, [text, urlValue, onCommit])
+  }, [text, urlValue])
 
   return (
     <form

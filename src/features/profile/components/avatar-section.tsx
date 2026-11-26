@@ -79,6 +79,7 @@ export function AvatarSection({ user }: { user: User }) {
             ref={inputRef}
             id="perfil-avatar"
             type="file"
+            aria-label="Escolher foto de perfil"
             accept={AVATAR_TYPES.join(',')}
             className="sr-only"
             // o botão "Escolher foto" abre o seletor; o input fica fora do Tab

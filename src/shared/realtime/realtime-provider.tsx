@@ -31,6 +31,9 @@ export function RealtimeProvider() {
     let socket: Socket | null = null
     let cancelled = false
     let connectedBefore = false
+    // Contador de eventos recebidos (aceitos ou ignorados). Os testes E2E
+    // esperam ele subir para saber que o evento já foi processado.
+    let received = 0
     const accept = createEventGate()
     const root = document.documentElement
 
@@ -48,13 +51,20 @@ export function RealtimeProvider() {
       root.dataset.realtime = 'disconnected'
     }
 
+    function countReceived() {
+      received += 1
+      root.dataset.realtimeReceived = String(received)
+    }
+
     function onNftUpdated(event: NftUpdatedEvent) {
+      countReceived()
       if (!accept(event)) return
       applyNftToCart(queryClient, event)
       applyNftUpdated(queryClient, event)
     }
 
     function onOrderUpdated(event: OrderUpdatedEvent) {
+      countReceived()
       if (!userId || !accept(event)) return
       applyOrderUpdated(queryClient, userId, event)
     }

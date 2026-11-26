@@ -167,7 +167,11 @@ padrão em vez de quebrar a página. Valores padrão são removidos da URL
 - **Token**: o login devolve `{ token, user, expiresAt }`. O token fica no
   `localStorage` (`kurio:session-token`) para sobreviver a refresh e vai em
   toda requisição como `Authorization: Bearer` (interceptor de request do
-  Axios). Sessão de 30 minutos no mock.
+  Axios). Sessão de 30 minutos no mock. **Limitação consciente:** um token em
+  `localStorage` pode ser lido por qualquer script da página (risco em caso de
+  XSS). Com um backend real, o certo seria um cookie `HttpOnly` + `Secure` +
+  `SameSite`, que o JavaScript não lê. Aqui o "servidor" é o MSW, que roda no
+  próprio navegador, então essa proteção não teria efeito real.
 - **Recuperação no refresh**: a query `["session"]` chama
   `GET /api/auth/session` quando existe token. Sem token, o usuário é visitante
   e nenhuma requisição é feita.

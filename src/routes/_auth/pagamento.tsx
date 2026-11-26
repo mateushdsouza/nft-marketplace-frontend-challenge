@@ -332,6 +332,7 @@ function CheckoutForm({
               id="pg-usuario"
               label="Nome de usuário *"
               autoComplete="username"
+              spellCheck={false}
               error={errors.username?.message}
               {...register('username')}
             />

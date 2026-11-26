@@ -7,7 +7,11 @@ import { formatEth } from '@/shared/lib/money'
 import { cn } from '@/shared/lib/utils'
 import { QuantityStepper } from '@/shared/ui/quantity-stepper'
 import { Skeleton } from '@/shared/ui/skeleton'
-import { useRemoveCartItem, useUpdateCartItem } from '../mutations'
+import {
+  useAddToCart,
+  useRemoveCartItem,
+  useUpdateCartItem,
+} from '../mutations'
 
 export const cartGridClass =
   'md:grid md:grid-cols-[minmax(0,1fr)_110px_130px_120px_40px] md:items-center md:gap-4'
@@ -15,6 +19,7 @@ export const cartGridClass =
 export function CartItemRow({ item }: { item: CartItem }) {
   const update = useUpdateCartItem()
   const remove = useRemoveCartItem()
+  const add = useAddToCart()
   const busy = update.isPending || remove.isPending
   const available = item.edition.available
   const overStock = item.quantity > available
@@ -81,7 +86,23 @@ export function CartItemRow({ item }: { item: CartItem }) {
         type="button"
         onClick={() =>
           remove.mutate(item.id, {
-            onSuccess: () => toast.success(`${item.nft.name} removido.`),
+            // Remover é imediato; o aviso oferece desfazer (adiciona de novo
+            // a mesma edição e quantidade, sujeito ao estoque atual).
+            onSuccess: () =>
+              toast.success(`${item.nft.name} removido.`, {
+                action: {
+                  label: 'Desfazer',
+                  onClick: () =>
+                    add.mutate(
+                      {
+                        nftId: item.nftId,
+                        editionId: item.editionId,
+                        quantity: item.quantity,
+                      },
+                      { onError: (error) => toast.error(error.message) },
+                    ),
+                },
+              }),
             onError: (error) => toast.error(error.message),
           })
         }

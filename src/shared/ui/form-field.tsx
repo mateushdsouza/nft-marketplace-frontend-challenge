@@ -34,6 +34,8 @@ export function TextField({
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy}
         className={inputClass}
+        // Corretor ortográfico só atrapalha em e-mail (sublinha o endereço).
+        spellCheck={props.type === 'email' ? false : undefined}
         {...props}
       />
       {hint && !error && (
