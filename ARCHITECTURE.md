@@ -368,6 +368,11 @@ Todo evento tem `eventId`, `resource { type, id }` e `version` (a mesma
   que está na tela. É assim que um pedido que terminou com o socket fora do ar
   aparece certo. A página do pedido ainda consulta a cada 15 s enquanto ele
   está pendente, como reserva caso o socket não volte.
+- **Primeira conexão**: ao entrar na sessão do socket, o app busca de novo os
+  pedidos que estão na tela. Sem isso havia uma corrida: depois de um refresh
+  com pedido pendente, a página buscava o pedido pelo REST, o mock o liquidava
+  e emitia `order.updated` antes de o socket entrar na sessão, e o evento se
+  perdia (a tela só se corrigia na consulta de reserva de 15 s).
 - **Sessão**: um socket por sessão. Login, logout ou troca de usuário
   desconectam o socket antigo (com `off` dos listeners) e abrem outro, com um
   porteiro novo.

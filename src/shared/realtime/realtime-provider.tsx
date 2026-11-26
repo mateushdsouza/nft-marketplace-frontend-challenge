@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import type { Socket } from 'socket.io-client'
-import { useSession } from '@/features/auth/queries'
+import { useSession, userKeys } from '@/features/auth/queries'
 import { applyNftToCart } from '@/features/cart/realtime'
 import { applyNftUpdated } from '@/features/catalog/realtime'
 import { applyOrderUpdated } from '@/features/checkout/realtime'
@@ -40,7 +40,17 @@ export function RealtimeProvider() {
     function onConnect() {
       root.dataset.realtime = 'connected'
       const token = sessionToken.get()
-      if (userId && token) socket?.emit('session.join', token)
+      if (userId && token) {
+        socket?.emit('session.join', token)
+        // Um pedido pode ter mudado entre a busca REST e a entrada na sessão
+        // (ex.: refresh com pedido pendente). Esse evento não chegou: confere
+        // de novo os pedidos que estão na tela.
+        if (!connectedBefore) {
+          queryClient.invalidateQueries({
+            queryKey: [...userKeys.all(userId), 'order'],
+          })
+        }
+      }
       // Reconexão: eventos podem ter se perdido enquanto a conexão estava
       // caída. Busca de novo, no REST, tudo que está na tela.
       if (connectedBefore) queryClient.invalidateQueries()
