@@ -1,123 +1,62 @@
-import { useQuery } from '@tanstack/react-query'
-import { getRouteApi } from '@tanstack/react-router'
-import { SlidersHorizontal } from 'lucide-react'
-import { useCallback } from 'react'
-import { NFT_SORTS, NFT_TABS, type NftSort } from '@/shared/api/types'
-import { SORT_LABEL, TAB_LABEL } from '@/shared/lib/labels'
+import { NFT_TABS } from '@/shared/api/types'
+import { TAB_LABEL } from '@/shared/lib/labels'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/button'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/shared/ui/sheet'
 import { StateMessage } from '@/shared/ui/state-message'
-import { nftListQuery } from '../queries'
-import { CATALOG_PAGE_SIZE, type CatalogSearch } from '../search'
+import { CATALOG_PAGE_SIZE } from '../search'
+import { useCatalogList, useCatalogSearch } from '../use-catalog-search'
 import { FiltersPanel } from './filters-panel'
 import { FeaturedNft } from './home-sections'
 import { NftCard, NftCardSkeleton } from './nft-card'
 import { Pagination } from './pagination'
-import { SearchBox } from './search-box'
-
-const route = getRouteApi('/')
+import { SortSelect } from './sort-select'
 
 function scrollToCatalog() {
   document.getElementById('catalogo')?.scrollIntoView({ block: 'start' })
 }
 
-export function CatalogSection() {
-  const search = route.useSearch()
-  const navigate = route.useNavigate()
-
-  const query = useQuery(
-    nftListQuery({ ...search, pageSize: CATALOG_PAGE_SIZE }),
-  )
+// Abas, ordenação, filtros (lg+) e a grade. A busca fica no CatalogToolbar.
+export function CatalogSection({ className }: { className?: string }) {
+  const { search, navigate, updateSearch, clearFilters } = useCatalogSearch()
+  const query = useCatalogList(search)
   const { data, isPending, isError, isFetching, isPlaceholderData, error } =
     query
 
-  // Qualquer mudança de filtro volta para a página 1.
-  const updateSearch = useCallback(
-    (patch: Partial<CatalogSearch>, replace = false) => {
-      navigate({
-        search: (prev) => ({ ...prev, ...patch, page: 1 }),
-        resetScroll: false,
-        replace,
-      })
-    },
-    [navigate],
-  )
-
-  const commitSearchText = useCallback(
-    (q: string) => updateSearch({ q: q || undefined }, true),
-    [updateSearch],
-  )
-
-  const clearFilters = () =>
-    navigate({ search: { q: search.q }, resetScroll: false })
-
   const showFullError = isError && (!data || isPlaceholderData)
   const refreshing = isFetching && !isPending && !showFullError
-
-  const filters = (
-    <FiltersPanel
-      search={search}
-      facets={data?.facets}
-      onChange={(patch) => updateSearch(patch)}
-      onClear={clearFilters}
-    />
-  )
 
   return (
     <section
       id="catalogo"
       aria-labelledby="catalogo-titulo"
-      className="mx-auto mt-12 max-w-content scroll-mt-6 px-6 md:mt-24"
+      className={cn(
+        'mx-auto w-full max-w-content scroll-mt-6 px-6 md:scroll-mt-[104px]',
+        className,
+      )}
     >
       <h2 id="catalogo-titulo" className="sr-only">
         Catálogo de NFTs
       </h2>
 
-      <div className="flex items-center gap-3">
-        <SearchBox value={search.q} onCommit={commitSearchText} />
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button
-              variant="default"
-              size="icon"
-              className="size-12 rounded-card lg:hidden"
-              aria-label="Abrir filtros"
-            >
-              <SlidersHorizontal className="size-5" aria-hidden />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-[320px] overflow-y-auto">
-            <SheetHeader>
-              <SheetTitle>Filtros</SheetTitle>
-              <SheetDescription>
-                Os resultados atualizam a cada filtro escolhido.
-              </SheetDescription>
-            </SheetHeader>
-            <div className="px-4 pb-6">{filters}</div>
-          </SheetContent>
-        </Sheet>
-      </div>
-
-      <div className="mt-8 grid gap-12 lg:grid-cols-[310px_1fr]">
+      <div className="grid gap-12 lg:grid-cols-[310px_1fr]">
         <div className="hidden lg:block">
-          <aside aria-label="Filtros">{filters}</aside>
+          <aside aria-label="Filtros">
+            <FiltersPanel
+              search={search}
+              facets={data?.facets}
+              onChange={(patch) => updateSearch(patch)}
+              onClear={clearFilters}
+            />
+          </aside>
           <FeaturedNft />
         </div>
 
         <div>
-          <div className="flex flex-col gap-4 border-b border-border pb-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between md:border-b md:border-border md:pb-3">
             <div
               role="group"
               aria-label="Listas"
-              className="flex flex-wrap gap-x-4 gap-y-2 sm:gap-x-5"
+              className="flex flex-wrap gap-x-3 gap-y-2 sm:gap-x-5"
             >
               {NFT_TABS.map((tab) => (
                 <button
@@ -126,9 +65,9 @@ export function CatalogSection() {
                   aria-pressed={search.tab === tab}
                   onClick={() => updateSearch({ tab })}
                   className={cn(
-                    'relative py-1 text-[13px] whitespace-nowrap transition-colors sm:text-sm',
+                    'relative py-1 text-[13px] whitespace-nowrap transition-colors min-[400px]:text-sm',
                     search.tab === tab
-                      ? 'font-bold text-text-accent after:absolute after:inset-x-0 after:-bottom-[13px] after:h-[3px] after:bg-primary'
+                      ? 'font-bold text-text-accent after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:bg-primary md:after:-bottom-[13px] md:after:h-[3px]'
                       : 'text-foreground hover:text-text-accent',
                   )}
                 >
@@ -136,30 +75,18 @@ export function CatalogSection() {
                 </button>
               ))}
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <label htmlFor="ordenar" className="shrink-0">
-                Ordenar por:
-              </label>
-              <select
+            <div className="flex items-center gap-2 text-sm max-md:hidden">
+              <SortSelect
                 id="ordenar"
                 value={search.sort}
-                onChange={(e) =>
-                  updateSearch({ sort: e.target.value as NftSort })
-                }
-                className="h-9 rounded-input border border-border bg-surface px-2 text-sm text-foreground focus-visible:border-primary focus-visible:outline-none"
-              >
-                {NFT_SORTS.map((sort) => (
-                  <option key={sort} value={sort}>
-                    {SORT_LABEL[sort]}
-                  </option>
-                ))}
-              </select>
+                onChange={(sort) => updateSearch({ sort })}
+              />
             </div>
           </div>
 
           <p
             aria-live="polite"
-            className="mt-4 min-h-5 text-xs text-text-muted"
+            className="mt-4 min-h-5 text-xs text-text-muted max-md:sr-only"
           >
             {isPending
               ? 'Carregando NFTs…'
@@ -174,7 +101,7 @@ export function CatalogSection() {
             {isPending ? (
               <div
                 aria-busy="true"
-                className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 md:gap-x-8 md:gap-y-12"
+                className="grid grid-cols-2 gap-x-4 gap-y-6 pb-8 md:grid-cols-3 md:gap-x-8 md:gap-y-12 md:pb-0 max-md:[&>*:nth-child(even)]:translate-y-8"
               >
                 {Array.from({ length: CATALOG_PAGE_SIZE }, (_, i) => (
                   <NftCardSkeleton key={i} />
@@ -225,12 +152,12 @@ export function CatalogSection() {
                 <ul
                   aria-busy={refreshing}
                   className={cn(
-                    'grid grid-cols-2 gap-x-4 gap-y-10 transition-opacity md:grid-cols-3 md:gap-x-8 md:gap-y-12',
+                    'grid grid-cols-2 gap-x-4 gap-y-6 pb-8 transition-opacity md:grid-cols-3 md:gap-x-8 md:gap-y-12 md:pb-0',
                     refreshing && 'opacity-60',
                   )}
                 >
                   {data.items.map((nft, index) => (
-                    <li key={nft.id}>
+                    <li key={nft.id} className="max-md:even:translate-y-8">
                       <NftCard nft={nft} priority={index < 3} />
                     </li>
                   ))}

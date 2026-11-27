@@ -53,7 +53,7 @@ export function Promos() {
   return (
     <section
       aria-label="Promoções"
-      className="defer-render mx-auto mt-24 grid max-w-content gap-7 px-6 md:grid-cols-2"
+      className="defer-render mx-auto mt-24 grid w-full max-w-content gap-7 px-6 md:grid-cols-2"
     >
       {PROMOS.map((promo) => (
         <article
@@ -133,7 +133,7 @@ export function MintJournal() {
   return (
     <section
       aria-labelledby="diario"
-      className="defer-render mx-auto mt-24 max-w-content px-6"
+      className="defer-render mx-auto mt-24 w-full max-w-content px-6"
     >
       <h2 id="diario" className="text-center text-[28px] font-bold">
         Diário da Cunhagem

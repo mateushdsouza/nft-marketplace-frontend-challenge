@@ -13,5 +13,17 @@ export async function loginAs(
   await page.getByLabel('E-mail').fill(user.email)
   await page.getByLabel('Senha', { exact: true }).fill(user.password)
   await page.getByRole('button', { name: 'Entrar', exact: true }).click()
-  await expect(page.getByRole('button', { name: 'Sair' })).toBeVisible()
+  await expectSignedIn(page)
+}
+
+// Na home mobile não há cabeçalho (como no Figma): a sessão aparece no item
+// Perfil da barra inferior. Nas outras telas, no botão Sair do cabeçalho.
+export async function expectSignedIn(page: Page) {
+  await expect(
+    page
+      .getByRole('button', { name: 'Sair' })
+      .or(page.getByRole('link', { name: /^Perfil de / }))
+      .filter({ visible: true })
+      .first(),
+  ).toBeVisible()
 }

@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { ALICE, BOB, loginAs } from '../support/auth'
+import { ALICE, BOB, expectSignedIn, loginAs } from '../support/auth'
 import { callApi, resetMocks } from '../support/mocks'
 
 test.beforeEach(async ({ page }) => {
@@ -52,10 +52,10 @@ test('cadastro cria a conta, entra e mantém a sessão após refresh', async ({
   await page.getByRole('button', { name: 'Criar conta', exact: true }).click()
 
   await expect(page).toHaveURL('/')
-  await expect(page.getByRole('button', { name: 'Sair' })).toBeVisible()
+  await expectSignedIn(page)
 
   await page.reload()
-  await expect(page.getByRole('button', { name: 'Sair' })).toBeVisible()
+  await expectSignedIn(page)
 })
 
 test('login com senha errada mostra erro sem revelar o motivo', async ({
@@ -87,9 +87,17 @@ test('logout limpa a sessão e troca de usuário não mostra dados do anterior',
   await expect(page.getByLabel('E-mail')).toHaveValue(ALICE.email)
 
   await page.getByRole('button', { name: 'Sair' }).click()
+  await expect(page.getByText('Você saiu da sua conta.')).toBeVisible()
+  // Visitante de novo: Entrar no cabeçalho ou Perfil sem nome na barra mobile.
   await expect(
-    page.getByRole('banner').getByRole('link', { name: 'Entrar' }),
+    page
+      .getByRole('banner')
+      .getByRole('link', { name: 'Entrar' })
+      .or(page.getByRole('link', { name: 'Perfil', exact: true }))
+      .filter({ visible: true })
+      .first(),
   ).toBeVisible()
+  await expect(page.getByRole('link', { name: /^Perfil de / })).toHaveCount(0)
 
   await page.goto('/perfil')
   await expect(page).toHaveURL(/\/entrar/)

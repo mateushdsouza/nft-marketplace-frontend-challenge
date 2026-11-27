@@ -8,7 +8,7 @@ export function Hero() {
   return (
     <section
       aria-labelledby="hero-titulo"
-      className="mx-auto mt-6 max-w-content px-6 md:mt-8"
+      className="mx-auto mt-4 w-full max-w-content px-6 md:mt-8"
     >
       <div className="relative grid grid-cols-[1fr_138px] items-center gap-2 overflow-hidden rounded-[30px] bg-gradient-to-br from-primary/20 to-primary/10 p-4 pb-7 md:grid-cols-[1fr_minmax(0,380px)] md:gap-10 md:rounded-none md:bg-none md:p-0">
         <div

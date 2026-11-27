@@ -15,6 +15,18 @@ async function openFilters(page: Page) {
   if (await trigger.isVisible()) await trigger.click()
 }
 
+// No mobile a ordenação fica dentro da gaveta de filtros.
+async function sortBy(page: Page, value: string) {
+  const inline = page.locator('#ordenar')
+  if (await inline.isVisible()) {
+    await inline.selectOption(value)
+    return
+  }
+  await page.getByRole('button', { name: 'Abrir filtros' }).click()
+  await page.getByRole('dialog').getByLabel('Ordenar por:').selectOption(value)
+  await page.keyboard.press('Escape')
+}
+
 test('filtros combinados ficam na URL e sobrevivem a refresh e histórico', async ({
   page,
 }) => {
@@ -75,7 +87,7 @@ test('busca com debounce e ordenação por preço', async ({ page }) => {
   await page.getByRole('searchbox').fill('')
   await expect(page).not.toHaveURL(/q=/)
 
-  await page.getByLabel('Ordenar por:').selectOption('price-asc')
+  await sortBy(page, 'price-asc')
   await expect(page).toHaveURL(/sort=price-asc/)
   const prices = page
     .locator('#catalogo')

@@ -1,9 +1,10 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useRouterState } from '@tanstack/react-router'
 import { LogIn, LogOut, Search, ShoppingCart } from 'lucide-react'
 import { useLogout } from '@/features/auth/mutations'
 import { useSession } from '@/features/auth/queries'
 import { CartCountBadge } from '@/features/cart/components/cart-count-badge'
 import { comingSoon } from '@/shared/lib/coming-soon'
+import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/button'
 import { UserAvatar } from '@/shared/ui/user-avatar'
 
@@ -13,9 +14,14 @@ const navLinkClass =
 export function SiteHeader() {
   const { user, isPending } = useSession()
   const logout = useLogout()
+  // A home mobile do Figma não tem cabeçalho: abre direto na busca. Conta e
+  // carrinho ficam na barra inferior.
+  const onHome = useRouterState({ select: (s) => s.location.pathname === '/' })
 
   return (
-    <header className="border-b border-primary/30">
+    <header
+      className={cn('border-b border-primary/30', onHome && 'max-md:hidden')}
+    >
       <div className="mx-auto flex h-16 max-w-content items-center justify-between gap-6 px-6">
         <Link
           to="/"
