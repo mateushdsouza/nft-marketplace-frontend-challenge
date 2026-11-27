@@ -7,7 +7,7 @@
       "url": ["http://localhost:4174/", "http://localhost:4174/nft/nft_001"],
       "numberOfRuns": 3,
       "settings": {
-        "chromeFlags": "--headless=new --no-sandbox",
+        "chromeFlags": "--headless=new --no-sandbox --disable-gpu",
         "blockedUrlPatterns": ["*kaspersky-labs.com*"]
       }
     },

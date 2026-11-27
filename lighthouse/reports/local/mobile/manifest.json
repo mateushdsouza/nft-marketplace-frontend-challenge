@@ -2,8 +2,8 @@
   {
     "url": "http://localhost:4174/",
     "isRepresentativeRun": false,
-    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost--2026_11_27_00_02_05.report.html",
-    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost--2026_11_27_00_02_05.report.json",
+    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost--2026_11_27_03_14_34.report.html",
+    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost--2026_11_27_03_14_34.report.json",
     "summary": {
       "performance": 0.8,
       "accessibility": 1,
@@ -14,8 +14,8 @@
   {
     "url": "http://localhost:4174/",
     "isRepresentativeRun": false,
-    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost--2026_11_27_00_02_24.report.html",
-    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost--2026_11_27_00_02_24.report.json",
+    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost--2026_11_27_03_15_23.report.html",
+    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost--2026_11_27_03_15_23.report.json",
     "summary": {
       "performance": 0.8,
       "accessibility": 1,
@@ -26,20 +26,8 @@
   {
     "url": "http://localhost:4174/nft/nft_001",
     "isRepresentativeRun": false,
-    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost-nft_nft_001-2026_11_27_00_03_15.report.html",
-    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost-nft_nft_001-2026_11_27_00_03_15.report.json",
-    "summary": {
-      "performance": 0.83,
-      "accessibility": 1,
-      "best-practices": 0.82,
-      "seo": 1
-    }
-  },
-  {
-    "url": "http://localhost:4174/nft/nft_001",
-    "isRepresentativeRun": false,
-    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost-nft_nft_001-2026_11_27_00_03_32.report.html",
-    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost-nft_nft_001-2026_11_27_00_03_32.report.json",
+    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost-nft_nft_001-2026_11_27_03_15_40.report.html",
+    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost-nft_nft_001-2026_11_27_03_15_40.report.json",
     "summary": {
       "performance": 0.82,
       "accessibility": 1,
@@ -48,12 +36,24 @@
     }
   },
   {
+    "url": "http://localhost:4174/nft/nft_001",
+    "isRepresentativeRun": false,
+    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost-nft_nft_001-2026_11_27_03_16_13.report.html",
+    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost-nft_nft_001-2026_11_27_03_16_13.report.json",
+    "summary": {
+      "performance": 0.81,
+      "accessibility": 1,
+      "best-practices": 0.82,
+      "seo": 1
+    }
+  },
+  {
     "url": "http://localhost:4174/",
     "isRepresentativeRun": true,
-    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost--2026_11_27_00_02_41.report.html",
-    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost--2026_11_27_00_02_41.report.json",
+    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost--2026_11_27_03_15_06.report.html",
+    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost--2026_11_27_03_15_06.report.json",
     "summary": {
-      "performance": 0.8,
+      "performance": 0.78,
       "accessibility": 1,
       "best-practices": 0.82,
       "seo": 1
@@ -62,10 +62,10 @@
   {
     "url": "http://localhost:4174/nft/nft_001",
     "isRepresentativeRun": true,
-    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost-nft_nft_001-2026_11_27_00_02_58.report.html",
-    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost-nft_nft_001-2026_11_27_00_02_58.report.json",
+    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost-nft_nft_001-2026_11_27_03_15_57.report.html",
+    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\local\\mobile\\localhost-nft_nft_001-2026_11_27_03_15_57.report.json",
     "summary": {
-      "performance": 0.83,
+      "performance": 0.82,
       "accessibility": 1,
       "best-practices": 0.82,
       "seo": 1

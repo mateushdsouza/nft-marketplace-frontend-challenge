@@ -433,10 +433,12 @@ o refresh funcionam no deploy.
 Configuração, comandos, resultados e a análise do que ficou abaixo da meta
 estão em [`lighthouse/README.md`](lighthouse/README.md). Resumo do deploy
 (mediana de 3): Acessibilidade, Boas práticas e SEO 100 nas quatro
-combinações; Performance 99 no desktop, 90 no Detalhe mobile e 85 no Início
-mobile. O Início mobile fica abaixo de 90 principalmente porque o backend
+combinações; Performance 99 no desktop, 89 no Detalhe mobile e 85 no Início
+mobile. O mobile fica abaixo de 90 principalmente porque o backend
 simulado (MSW, fixtures, banco em memória) é baixado e executado no navegador
-antes da primeira renderização.
+antes da primeira renderização. A auditoria roda o Chrome com `--disable-gpu`:
+a GPU do Chrome headless travava a página por até 3,5 s (simulados) em algumas
+medições; a investigação está no `lighthouse/README.md`.
 
 ## Decisões e desvios
 
