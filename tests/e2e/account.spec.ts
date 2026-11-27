@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { ALICE, BOB, loginAs } from '../support/auth'
+import { ALICE, BOB, loginAs, logout } from '../support/auth'
 import { resetMocks } from '../support/mocks'
 
 test.beforeEach(async ({ page }) => {
@@ -112,7 +112,7 @@ test('troca de senha exige a senha atual correta e vale no próximo login', asyn
   await page.getByRole('button', { name: 'Alterar senha' }).click()
   await expect(page.getByText('Senha alterada.')).toBeVisible()
 
-  await page.getByRole('button', { name: 'Sair' }).click()
+  await logout(page)
   await loginAs(page, { email: ALICE.email, password: 'NovaSenha@1' })
 })
 

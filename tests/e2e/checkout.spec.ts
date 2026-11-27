@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { ALICE, BOB, loginAs } from '../support/auth'
+import { ALICE, BOB, loginAs, logout } from '../support/auth'
 import { callApi, resetMocks, setScenario } from '../support/mocks'
 import {
   addToCart,
@@ -184,7 +184,7 @@ test('pedido de outro usuário não é exibido', async ({ page }) => {
   await expect(page).toHaveURL(/\/pedidos\/ord_/)
   const orderUrl = page.url()
 
-  await page.getByRole('button', { name: 'Sair' }).click()
+  await logout(page)
   await loginAs(page, BOB)
   await page.goto(orderUrl)
   await expect(page.getByText('Pedido não encontrado')).toBeVisible()

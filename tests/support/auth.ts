@@ -27,3 +27,11 @@ export async function expectSignedIn(page: Page) {
       .first(),
   ).toBeVisible()
 }
+
+// Sai e espera o logout terminar. Navegar logo depois do clique (ex.: goto
+// para /entrar) recarrega a página antes de o token ser apagado, e a sessão
+// anterior continua ativa.
+export async function logout(page: Page) {
+  await page.getByRole('button', { name: 'Sair' }).click()
+  await expect(page.getByText('Você saiu da sua conta.')).toBeVisible()
+}

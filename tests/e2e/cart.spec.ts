@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { ALICE, BOB, loginAs } from '../support/auth'
+import { ALICE, BOB, loginAs, logout } from '../support/auth'
 import { resetMocks } from '../support/mocks'
 
 test.beforeEach(async ({ page }) => {
@@ -119,7 +119,7 @@ test('itens do visitante entram no carrinho da conta ao fazer login', async ({
 test('carrinho de um usuário não aparece para outro', async ({ page }) => {
   await loginAs(page, ALICE)
   await addFromDetail(page, 'nft_005', '1/50')
-  await page.getByRole('button', { name: 'Sair' }).click()
+  await logout(page)
 
   await loginAs(page, BOB)
   await page.goto('/carrinho')

@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { ALICE, BOB, loginAs } from '../support/auth'
+import { ALICE, BOB, loginAs, logout } from '../support/auth'
 import { resetMocks, setScenario } from '../support/mocks'
 
 test.beforeEach(async ({ page }) => {
@@ -35,7 +35,7 @@ test('favorito persiste após refresh e é só do usuário que favoritou', async
   await page.reload()
   await expect(favoriteButton(page)).toHaveAttribute('aria-pressed', 'true')
 
-  await page.getByRole('button', { name: 'Sair' }).click()
+  await logout(page)
   await loginAs(page, BOB)
   await page.goto('/nft/nft_001')
   await expect(favoriteButton(page)).toHaveAttribute('aria-pressed', 'false')
