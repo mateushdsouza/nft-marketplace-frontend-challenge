@@ -65,7 +65,7 @@ function NftDetailPage() {
         </ol>
       </nav>
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,573px)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,573px)_minmax(0,1fr)]">
         <NftGallery image={nft.image} name={nft.name} />
         <NftInfo key={nft.id} nft={nft} />
       </div>
@@ -219,7 +219,7 @@ function NftInfo({ nft }: { nft: Nft }) {
               : 'Todas as edições estão esgotadas'}
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <Button
             className="h-10 rounded-button px-8 font-bold uppercase"
             disabled={!canBuy || addToCart.isPending}
@@ -275,7 +275,7 @@ function NftDetailSkeleton() {
         Carregando NFT…
       </p>
       <Skeleton className="mb-4 h-5 w-40" />
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,573px)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,573px)_minmax(0,1fr)]">
         <div className="flex flex-col-reverse gap-4 md:flex-row md:items-start">
           <div className="flex gap-3 md:flex-col md:gap-4">
             {Array.from({ length: 4 }, (_, i) => (

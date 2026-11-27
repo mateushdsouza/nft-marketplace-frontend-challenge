@@ -62,7 +62,7 @@ function CartPage() {
           }
         />
       ) : (
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_332px] lg:gap-20">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_332px] lg:gap-20">
           <section aria-label="Itens do carrinho">
             <div
               aria-hidden

@@ -314,13 +314,13 @@ function CheckoutForm({
     : (review?.quote ?? liveQuote.data)
 
   return (
-    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_405px] lg:gap-12">
+    <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_405px] lg:gap-12">
       <form id="checkout-form" onSubmit={onReview} noValidate>
         <fieldset disabled={!!review} className="space-y-5">
           <legend className="mb-4 text-lg font-bold">
             Perfil do colecionador
           </legend>
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <TextField
               id="pg-nome"
               label="Nome de exibição *"
@@ -502,14 +502,14 @@ function CheckoutSkeleton() {
   return (
     <div
       aria-busy="true"
-      className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_405px] lg:gap-12"
+      className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_405px] lg:gap-12"
     >
       <span className="sr-only" role="status">
         Carregando pagamento…
       </span>
       <div className="space-y-5">
         <Skeleton className="h-7 w-56" />
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <Skeleton className="h-16" />
           <Skeleton className="h-16" />
           <Skeleton className="h-16 sm:col-span-2" />

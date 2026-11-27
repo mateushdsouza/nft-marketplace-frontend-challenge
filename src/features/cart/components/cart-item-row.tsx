@@ -66,7 +66,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
         {formatEth(item.nft.priceEth)}
       </p>
 
-      <div className="flex items-center justify-between gap-3 md:block">
+      <div className="flex flex-wrap items-center justify-between gap-3 md:block">
         <QuantityStepper
           value={item.quantity}
           max={Math.max(available, item.quantity)}
