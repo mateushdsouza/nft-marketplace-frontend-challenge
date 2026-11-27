@@ -46,7 +46,13 @@ function RootLayout() {
       <Toaster />
       <SessionWatcher />
       <RealtimeProvider />
-      {import.meta.env.DEV && <TanStackRouterDevtools position="bottom-left" />}
+      {/* Só em dev. Fica acima da barra inferior do mobile para não cobrir os ícones. */}
+      {import.meta.env.DEV && (
+        <TanStackRouterDevtools
+          position="bottom-left"
+          toggleButtonProps={{ style: { bottom: '96px' } }}
+        />
+      )}
     </>
   )
 }
