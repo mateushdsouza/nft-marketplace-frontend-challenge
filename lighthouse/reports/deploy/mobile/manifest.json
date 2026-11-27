@@ -2,10 +2,10 @@
   {
     "url": "https://nft-marketplace-frontend-challenge.vercel.app/",
     "isRepresentativeRun": false,
-    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app--2026_11_26_23_43_21.report.html",
-    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app--2026_11_26_23_43_21.report.json",
+    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app--2026_11_26_23_58_11.report.html",
+    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app--2026_11_26_23_58_11.report.json",
     "summary": {
-      "performance": 0.87,
+      "performance": 0.85,
       "accessibility": 1,
       "best-practices": 1,
       "seo": 1
@@ -14,10 +14,10 @@
   {
     "url": "https://nft-marketplace-frontend-challenge.vercel.app/",
     "isRepresentativeRun": false,
-    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app--2026_11_26_23_43_40.report.html",
-    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app--2026_11_26_23_43_40.report.json",
+    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app--2026_11_26_23_58_47.report.html",
+    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app--2026_11_26_23_58_47.report.json",
     "summary": {
-      "performance": 0.73,
+      "performance": 0.83,
       "accessibility": 1,
       "best-practices": 1,
       "seo": 1
@@ -26,10 +26,10 @@
   {
     "url": "https://nft-marketplace-frontend-challenge.vercel.app/nft/nft_001",
     "isRepresentativeRun": false,
-    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app-nft_nft_001-2026_11_26_23_44_29.report.html",
-    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app-nft_nft_001-2026_11_26_23_44_29.report.json",
+    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app-nft_nft_001-2026_11_26_23_59_04.report.html",
+    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app-nft_nft_001-2026_11_26_23_59_04.report.json",
     "summary": {
-      "performance": 0.89,
+      "performance": 0.9,
       "accessibility": 1,
       "best-practices": 1,
       "seo": 1
@@ -38,8 +38,8 @@
   {
     "url": "https://nft-marketplace-frontend-challenge.vercel.app/nft/nft_001",
     "isRepresentativeRun": false,
-    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app-nft_nft_001-2026_11_26_23_44_45.report.html",
-    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app-nft_nft_001-2026_11_26_23_44_45.report.json",
+    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app-nft_nft_001-2026_11_26_23_59_36.report.html",
+    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app-nft_nft_001-2026_11_26_23_59_36.report.json",
     "summary": {
       "performance": 0.9,
       "accessibility": 1,
@@ -50,10 +50,10 @@
   {
     "url": "https://nft-marketplace-frontend-challenge.vercel.app/",
     "isRepresentativeRun": true,
-    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app--2026_11_26_23_43_57.report.html",
-    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app--2026_11_26_23_43_57.report.json",
+    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app--2026_11_26_23_58_31.report.html",
+    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app--2026_11_26_23_58_31.report.json",
     "summary": {
-      "performance": 0.8,
+      "performance": 0.87,
       "accessibility": 1,
       "best-practices": 1,
       "seo": 1
@@ -62,8 +62,8 @@
   {
     "url": "https://nft-marketplace-frontend-challenge.vercel.app/nft/nft_001",
     "isRepresentativeRun": true,
-    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app-nft_nft_001-2026_11_26_23_44_13.report.html",
-    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app-nft_nft_001-2026_11_26_23_44_13.report.json",
+    "htmlPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app-nft_nft_001-2026_11_26_23_59_20.report.html",
+    "jsonPath": "C:\\Users\\sirma\\Dev\\personals\\nft-marketplace-frontend-challenge\\lighthouse\\reports\\deploy\\mobile\\nft_marketplace_frontend_challenge_vercel_app-nft_nft_001-2026_11_26_23_59_20.report.json",
     "summary": {
       "performance": 0.89,
       "accessibility": 1,

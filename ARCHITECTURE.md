@@ -433,9 +433,10 @@ o refresh funcionam no deploy.
 Configuração, comandos, resultados e a análise do que ficou abaixo da meta
 estão em [`lighthouse/README.md`](lighthouse/README.md). Resumo do deploy
 (mediana de 3): Acessibilidade, Boas práticas e SEO 100 nas quatro
-combinações; Performance 99 no desktop e 77–86 no mobile. O mobile fica abaixo
-de 90 principalmente porque o backend simulado (MSW, fixtures, banco em
-memória) é baixado e executado no navegador antes da primeira renderização.
+combinações; Performance 99 no desktop, 90 no Detalhe mobile e 85 no Início
+mobile. O Início mobile fica abaixo de 90 principalmente porque o backend
+simulado (MSW, fixtures, banco em memória) é baixado e executado no navegador
+antes da primeira renderização.
 
 ## Decisões e desvios
 
@@ -467,5 +468,6 @@ memória) é baixado e executado no navegador antes da primeira renderização.
 - **Timeout do pedido**: simulado como resposta perdida (erro de rede depois de o pedido ser criado), em vez de esperar o timeout de 15 s do Axios, para os testes não ficarem lentos. O efeito para o front é o mesmo: ele não sabe se o pedido existe e reenvia com a mesma chave.
 - **Ações fora do escopo** (Criadores, Aprenda, Favoritos antes do login) mostram um toast "ainda não está disponível" em vez de parecer que funcionaram.
 - **Ícones**: `lucide-react` (já vem com o shadcn/ui) no lugar dos SVGs do Iconly, por serem parecidos e já otimizados.
-- **Imagens**: as artes do Figma foram exportadas em WebP 800×800. Ainda não há
-  versão menor para os cards.
+- **Imagens**: as artes do Figma foram exportadas em WebP 800×800. Uma versão
+  de 400 px (`nft-NN-400.webp`, gerada por `scripts/resize-images.mjs`) entra
+  no `srcset` dos cards, miniaturas e seções da home.

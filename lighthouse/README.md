@@ -33,46 +33,65 @@ que o deploy por um motivo que não existe em produção.
 
 | Página         | Perfil  | Performance | Acessibilidade | Boas práticas | SEO |    LCP |   CLS |    TBT |
 | -------------- | ------- | ----------: | -------------: | ------------: | --: | -----: | ----: | -----: |
-| Início         | mobile  |      **77** |            100 |           100 | 100 | 3.23 s | 0.036 | 431 ms |
-| Detalhe do NFT | mobile  |      **86** |            100 |           100 | 100 | 3.22 s | 0.000 | 150 ms |
-| Início         | desktop |          99 |            100 |           100 | 100 | 0.76 s | 0.002 |   0 ms |
-| Detalhe do NFT | desktop |          99 |            100 |           100 | 100 | 0.76 s | 0.000 |   0 ms |
+| Início         | mobile  |      **85** |            100 |           100 | 100 | 2.95 s | 0.016 | 209 ms |
+| Detalhe do NFT | mobile  |          90 |            100 |           100 | 100 | 2.90 s | 0.000 | 117 ms |
+| Início         | desktop |          99 |            100 |           100 | 100 | 0.71 s | 0.002 |   0 ms |
+| Detalhe do NFT | desktop |          99 |            100 |           100 | 100 | 0.71 s | 0.000 |   0 ms |
 
-Todas as metas são atingidas, exceto **Performance no mobile** (meta 90).
+Todas as metas são atingidas, exceto **Performance do Início no mobile**
+(85, meta 90). As três medições do Início mobile deram 83, 85 e 87.
 
-## Por que a Performance mobile fica abaixo de 90
+## Evolução
 
-Números do relatório mediano do Início no deploy: FCP 2,8 s, LCP 3,2 s,
-TBT 430 ms.
+| Momento (deploy, mobile)                    | Início | Detalhe |
+| ------------------------------------------- | -----: | ------: |
+| Primeira medição                            |     77 |      86 |
+| Sem o cookie store do MSW + preload do mock |     75 |      90 |
+| `content-visibility` nas seções de baixo    |     80 |      89 |
+| Imagens de 400 px com `srcset`              | **85** |  **90** |
 
-1. **O backend simulado roda no navegador.** Antes da primeira renderização, o
-   app baixa e executa o bundle do MSW (handlers, fixtures dos 40 NFTs, banco
-   em memória, servidor Socket.IO simulado: ~176 KB comprimido) e registra o
-   service worker. Num backend real esse código não existiria no cliente. No
-   relatório ele aparece como ~600 ms de execução (`bootup-time`) e parte do
-   JavaScript não usado (`unused-javascript`).
-2. **O LCP depende de dados.** No mobile, o maior elemento é a imagem do
-   primeiro card do catálogo. Ela só é descoberta depois que a lista chega da
-   API simulada (fase "Render Delay" de 1,6 s no LCP do Início).
-3. **Imagens maiores que o tamanho exibido.** As artes são WebP de ~50 KB
-   exibidas a 166 px no mobile (`uses-responsive-images`: ~158 KiB). Gerar
-   versões menores pediria uma ferramenta de imagem fora das dependências
-   permitidas no desafio.
+A queda de 77 para 75 na segunda linha não veio das otimizações: no mesmo
+commit a home ganhou as seções do Figma (promoções, diário, rodapé completo),
+e a página ficou bem mais longa. As duas linhas seguintes atacam esse custo.
 
 ## O que foi feito
 
-| Mudança                                                                                                                | Efeito medido (local, mobile)      |
-| ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `meta description` e `robots.txt` (antes o `/robots.txt` caía no rewrite da SPA e devolvia HTML)                       | SEO 83 → 100                       |
-| Imagens da primeira linha do catálogo sem `loading="lazy"` e com `fetchpriority="high"` (eram o LCP e estavam adiadas) | LCP 5,4 s → 3,8 s                  |
-| Servidor local com compressão, como a Vercel                                                                           | medição local comparável ao deploy |
-| Altura mínima da área de conteúdo: o rodapé não aparece logo abaixo do cabeçalho para depois ser empurrado             | CLS do Detalhe desktop 0,118 → 0   |
+| Mudança                                                                                                                                                                                                                               | Efeito medido                                             |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `meta description` e `robots.txt` (antes o `/robots.txt` caía no rewrite da SPA e devolvia HTML)                                                                                                                                      | SEO 83 → 100                                              |
+| Imagens da primeira linha do catálogo sem `loading="lazy"` e com `fetchpriority="high"` (eram o LCP e estavam adiadas)                                                                                                                | LCP mobile 5,4 s → 3,8 s (local)                          |
+| Altura mínima da área de conteúdo: o rodapé não aparece logo abaixo do cabeçalho para depois ser empurrado                                                                                                                            | CLS do Detalhe desktop 0,118 → 0                          |
+| No build, o `cookieStore` do MSW é trocado por uma versão vazia ([`src/mocks/msw-cookie-store.ts`](../src/mocks/msw-cookie-store.ts)). O original trazia `tough-cookie` e a lista de domínios do `tldts`, e o mock nunca cria cookies | bundle do mock 176 KB → 51 KB (gzip)                      |
+| `<link rel="modulepreload">` do bundle do mock no HTML (plugin no `vite.config.ts`): baixa junto com o app em vez de depois                                                                                                           | uma ida e volta de rede a menos antes da primeira tela    |
+| `content-visibility: auto` nas promoções, no diário e no rodapé: o navegador só calcula estilo e layout dessas partes quando chegam perto da tela                                                                                     | TBT do Início mobile 600 → 400 ms                         |
+| Versões de 400 px das artes (geradas por [`scripts/resize-images.mjs`](../scripts/resize-images.mjs) com o Chromium do Playwright) servidas com `srcset`                                                                              | ~52 KB → ~15 KB por imagem pequena; Início mobile 80 → 85 |
+| Servidor local com compressão, como a Vercel                                                                                                                                                                                          | medição local comparável ao deploy                        |
 
 **Testado e desfeito:** renderizar o app **antes** de o MSW subir (as chamadas
 à API esperariam o mock). A tela aparecia antes, mas a execução do bundle do
 mock passou a cair dentro da janela do TBT: a mediana do TBT do Início mobile
 subiu de ~140 ms para ~1,3 s e a Performance caiu de 79 para 54. Voltei ao
 comportamento anterior (commit 171d209).
+
+## Por que o Início mobile ainda fica abaixo de 90
+
+Relatório mediano do Início no deploy: FCP 2,7 s, LCP 2,9 s, TBT 209 ms.
+
+1. **Trabalho de CPU antes da primeira tela.** Na simulação (CPU 4× mais
+   lenta), executar o JavaScript leva ~1,1 s: o bundle do mock (MSW, handlers,
+   banco em memória, servidor Socket.IO simulado) e o app (React, TanStack,
+   `zod`, `decimal.js`). A tela só aparece depois de o mock subir, porque toda
+   chamada da página depende dele. Num backend real, o mock não existiria no
+   cliente.
+2. **O LCP depende de dados.** O maior elemento é a imagem do primeiro card,
+   que só é descoberta quando a lista chega da API simulada.
+3. **O Detalhe chega a 90 e o Início não** porque a home tem mais conteúdo
+   na primeira renderização (hero, filtros, 9 cards).
+
+Próximo passo possível, não feito: trocar o `zod` pela versão `zod/mini`
+(~27 KB gzip a menos no bundle principal). Exigiria reescrever as 12 validações
+do app e do mock, com risco de mudar mensagens de erro, para um ganho estimado
+de poucos pontos.
 
 ## Diferença entre local e deploy
 
@@ -81,4 +100,6 @@ injeta um script `http://gc.kis.v2.scr.kaspersky-labs.com/...` no HTML de
 páginas servidas por HTTP. A configuração bloqueia essa URL
 (`blockedUrlPatterns`), mas a auditoria "is-on-https" ainda conta a tentativa,
 e por isso **Boas práticas** dá ~82 no local e **100 no deploy**. Não é algo
-do app.
+do app. O local também é mais lento em FCP e LCP que o deploy (servidor Node
+sem CDN, mais o script do antivírus), então as notas de Performance locais
+ficam alguns pontos abaixo.
